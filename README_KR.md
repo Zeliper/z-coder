@@ -321,6 +321,7 @@ your-project/
 |---------|------|
 | **main-agent** | 워크플로우 조율, 서브 에이전트 spawn |
 | **codebase-search-agent** | 코드베이스 탐색, 패턴 분석 |
+| **reference-agent** | 레퍼런스 코드, 예제, 템플릿 탐색 |
 | **todo-list-agent** | 태스크를 Step으로 분해 |
 | **coder-agent** | 코드 변경 구현 |
 | **web-search-agent** | 외부 문서 검색 |
@@ -369,6 +370,56 @@ your-project/
   "custom_agents": ["dependency-analyzer-agent"]
 }
 ```
+
+---
+
+## 기존 프로젝트에 추가 시 주의사항
+
+기존 프로젝트에 이 오케스트레이션 시스템을 서브모듈로 추가할 때 다음 사항에 주의하세요:
+
+### 설치 전 체크리스트
+
+| 항목 | 설명 |
+|------|------|
+| **기존 `.claude/` 폴더** | 프로젝트에 이미 `.claude/` 폴더가 있다면 먼저 백업하세요. 초기화 시 덮어쓰기됩니다. |
+| **팀 동기화 필요** | 모든 팀원이 pull 후 `git submodule update --init --recursive` 실행 필요 |
+| **CI/CD 파이프라인** | 클론 시 `--recursive` 플래그를 포함하도록 CI/CD 업데이트 필요 |
+| **`.gitmodules` 충돌** | 기존 서브모듈이 있다면 `.gitmodules`에서 경로 충돌 확인 |
+
+### 팀 협업 시
+
+서브모듈 추가 후 팀원에게 안내하세요:
+
+```bash
+# 팀원은 pull 후 반드시 이 명령어 실행
+git submodule update --init --recursive
+
+# 또는 새로 클론할 때 recursive 플래그 사용
+git clone --recursive <your-repo-url>
+```
+
+### 기존 설정 백업
+
+기존 `.claude/` 설정이 있는 경우:
+
+```bash
+# 설치 전
+mv .claude .claude.backup.manual
+
+# /orchestration-init 후, 커스텀 설정을 다시 병합
+# 설정은 아래 마커 사이에 추가:
+# <!-- ORCHESTRATION-PROJECT-CONFIG-START -->
+# <!-- ORCHESTRATION-PROJECT-CONFIG-END -->
+```
+
+### 기존 프로젝트 추가 시 흔한 문제
+
+| 문제 | 해결 방법 |
+|------|----------|
+| 서브모듈 경로 충돌 | 다른 경로 선택: `git submodule add <url> .orchestration` |
+| 권한 거부 | 레포지토리 쓰기 권한 확인 |
+| 서브모듈 Detached HEAD | `cd .claude-orchestration && git checkout main` 실행 |
+| 중첩된 .git 충돌 | 서브모듈 추가 전 중첩된 `.git` 폴더 제거 |
 
 ---
 

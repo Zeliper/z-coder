@@ -321,6 +321,7 @@ your-project/
 |-------|------|
 | **main-agent** | Orchestrates workflow, spawns sub-agents |
 | **codebase-search-agent** | Explores codebase, finds patterns |
+| **reference-agent** | Searches reference code, examples, and templates |
 | **todo-list-agent** | Breaks down tasks into steps |
 | **coder-agent** | Implements code changes |
 | **web-search-agent** | Searches external documentation |
@@ -369,6 +370,56 @@ Based on your project type, additional agents may be created:
   "custom_agents": ["dependency-analyzer-agent"]
 }
 ```
+
+---
+
+## Important Notes for Adding to Existing Projects
+
+When adding this orchestration system to an existing project as a submodule, pay attention to the following:
+
+### Pre-Installation Checklist
+
+| Check | Description |
+|-------|-------------|
+| **Existing `.claude/` folder** | If your project already has a `.claude/` folder, back it up first. The initialization will overwrite it. |
+| **Team sync required** | All team members must run `git submodule update --init --recursive` after pulling |
+| **CI/CD pipeline** | Update your CI/CD to include `--recursive` flag when cloning |
+| **`.gitmodules` conflict** | If you already have submodules, check for path conflicts in `.gitmodules` |
+
+### For Team Collaboration
+
+After adding the submodule, inform your team:
+
+```bash
+# Team members must run this after pulling
+git submodule update --init --recursive
+
+# Or clone with recursive flag for new clones
+git clone --recursive <your-repo-url>
+```
+
+### Backup Existing Configuration
+
+If you have an existing `.claude/` configuration:
+
+```bash
+# Before installation
+mv .claude .claude.backup.manual
+
+# After /orchestration-init, merge your custom settings back
+# Your settings should go between the markers:
+# <!-- ORCHESTRATION-PROJECT-CONFIG-START -->
+# <!-- ORCHESTRATION-PROJECT-CONFIG-END -->
+```
+
+### Common Issues When Adding to Existing Projects
+
+| Issue | Solution |
+|-------|----------|
+| Submodule path conflict | Choose a different path: `git submodule add <url> .orchestration` |
+| Permission denied | Ensure you have write access to the repository |
+| Detached HEAD in submodule | Run `cd .claude-orchestration && git checkout main` |
+| Nested .git conflicts | Remove any nested `.git` folders before adding submodule |
 
 ---
 
