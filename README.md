@@ -33,7 +33,7 @@ Choose the commands for your operating system:
 cd /path/to/your-project
 
 # Add the orchestration system as a submodule
-git submodule add https://github.com/{your-repo}/claude-orchestration .claude-orchestration
+git submodule add https://github.com/Zeliper/z-coder .claude-orchestration
 git submodule update --init --recursive
 
 # Verify installation
@@ -50,7 +50,7 @@ ls -la .claude-orchestration/
 cd C:\path\to\your-project
 
 # Add the orchestration system as a submodule
-git submodule add https://github.com/{your-repo}/claude-orchestration .claude-orchestration
+git submodule add https://github.com/Zeliper/z-coder .claude-orchestration
 git submodule update --init --recursive
 
 # Verify installation
@@ -67,7 +67,7 @@ REM Navigate to your project root
 cd C:\path\to\your-project
 
 REM Add the orchestration system as a submodule
-git submodule add https://github.com/{your-repo}/claude-orchestration .claude-orchestration
+git submodule add https://github.com/Zeliper/z-coder .claude-orchestration
 git submodule update --init --recursive
 
 REM Verify installation
@@ -100,7 +100,7 @@ If you prefer not to use Git submodules:
 
 ```bash
 # Clone the repository
-git clone https://github.com/{your-repo}/claude-orchestration.git /tmp/claude-orchestration
+git clone https://github.com/Zeliper/z-coder.git /tmp/claude-orchestration
 
 # Copy files to your project
 cp -r /tmp/claude-orchestration/.claude ./
@@ -121,7 +121,7 @@ rm -rf /tmp/claude-orchestration
 
 ```powershell
 # Clone the repository
-git clone https://github.com/{your-repo}/claude-orchestration.git $env:TEMP\claude-orchestration
+git clone https://github.com/Zeliper/z-coder.git $env:TEMP\claude-orchestration
 
 # Copy files to your project
 Copy-Item -Recurse $env:TEMP\claude-orchestration\.claude .\
@@ -142,7 +142,7 @@ Remove-Item -Recurse -Force $env:TEMP\claude-orchestration
 
 ```cmd
 REM Clone the repository
-git clone https://github.com/{your-repo}/claude-orchestration.git %TEMP%\claude-orchestration
+git clone https://github.com/Zeliper/z-coder.git %TEMP%\claude-orchestration
 
 REM Copy files to your project
 xcopy /E /I %TEMP%\claude-orchestration\.claude .\.claude

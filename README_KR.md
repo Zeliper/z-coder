@@ -33,7 +33,7 @@ Claude Code를 위한 범용 멀티 에이전트 오케스트레이션 시스템
 cd /path/to/your-project
 
 # 오케스트레이션 시스템을 서브모듈로 추가
-git submodule add https://github.com/{your-repo}/claude-orchestration .claude-orchestration
+git submodule add https://github.com/Zeliper/z-coder .claude-orchestration
 git submodule update --init --recursive
 
 # 설치 확인
@@ -50,7 +50,7 @@ ls -la .claude-orchestration/
 cd C:\path\to\your-project
 
 # 오케스트레이션 시스템을 서브모듈로 추가
-git submodule add https://github.com/{your-repo}/claude-orchestration .claude-orchestration
+git submodule add https://github.com/Zeliper/z-coder .claude-orchestration
 git submodule update --init --recursive
 
 # 설치 확인
@@ -67,7 +67,7 @@ REM 프로젝트 루트로 이동
 cd C:\path\to\your-project
 
 REM 오케스트레이션 시스템을 서브모듈로 추가
-git submodule add https://github.com/{your-repo}/claude-orchestration .claude-orchestration
+git submodule add https://github.com/Zeliper/z-coder .claude-orchestration
 git submodule update --init --recursive
 
 REM 설치 확인
@@ -100,7 +100,7 @@ Git 서브모듈을 사용하지 않으려면:
 
 ```bash
 # 레포지토리 클론
-git clone https://github.com/{your-repo}/claude-orchestration.git /tmp/claude-orchestration
+git clone https://github.com/Zeliper/z-coder.git /tmp/claude-orchestration
 
 # 프로젝트로 파일 복사
 cp -r /tmp/claude-orchestration/.claude ./
@@ -121,7 +121,7 @@ rm -rf /tmp/claude-orchestration
 
 ```powershell
 # 레포지토리 클론
-git clone https://github.com/{your-repo}/claude-orchestration.git $env:TEMP\claude-orchestration
+git clone https://github.com/Zeliper/z-coder.git $env:TEMP\claude-orchestration
 
 # 프로젝트로 파일 복사
 Copy-Item -Recurse $env:TEMP\claude-orchestration\.claude .\
@@ -142,7 +142,7 @@ Remove-Item -Recurse -Force $env:TEMP\claude-orchestration
 
 ```cmd
 REM 레포지토리 클론
-git clone https://github.com/{your-repo}/claude-orchestration.git %TEMP%\claude-orchestration
+git clone https://github.com/Zeliper/z-coder.git %TEMP%\claude-orchestration
 
 REM 프로젝트로 파일 복사
 xcopy /E /I %TEMP%\claude-orchestration\.claude .\.claude
