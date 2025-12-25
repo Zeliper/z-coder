@@ -32,11 +32,45 @@
 ## 출력
 **100자 이내 결과 요약**
 
+### 정상 완료 시
 ```markdown
 ## coder-agent 결과
+- 상태: COMPLETED
 - 수정 파일: [목록]
 - 변경 내용: [요약]
 - 주의 사항: [있는 경우]
+```
+
+### 사용자 입력 필요 시
+다음 상황에서 `USER_INPUT_REQUIRED` 플래그와 함께 결과 반환:
+- 구현 방식이 여러 가지 존재할 때
+- 기존 코드와 충돌하는 결정이 필요할 때
+- 요구사항이 불명확하여 확인이 필요할 때
+- 파괴적 변경(삭제, 대규모 리팩토링)이 필요할 때
+
+```markdown
+## coder-agent 결과
+- 상태: PENDING_INPUT
+- USER_INPUT_REQUIRED:
+  - type: "choice" | "confirm" | "plan"
+  - reason: "{입력이 필요한 이유}"
+  - options: ["{선택지1}", "{선택지2}", ...] (choice인 경우)
+  - context: "{현재 파악한 상황, 각 선택지의 장단점}"
+- 진행된 작업: [있는 경우]
+- 대기 중인 작업: [입력 후 진행할 내용]
+```
+
+**예시: 구현 방식 선택 필요**
+```markdown
+## coder-agent 결과
+- 상태: PENDING_INPUT
+- USER_INPUT_REQUIRED:
+  - type: "choice"
+  - reason: "상태 관리 라이브러리 선택 필요"
+  - options: ["Redux (기존 프로젝트 패턴)", "Zustand (경량)", "Context API (추가 의존성 없음)"]
+  - context: "현재 프로젝트에 상태 관리 없음. Redux는 보일러플레이트 많지만 DevTools 지원. Zustand는 간단하지만 새 의존성 추가 필요."
+- 진행된 작업: 컴포넌트 구조 분석 완료
+- 대기 중인 작업: 선택된 방식으로 상태 관리 구현
 ```
 
 ---
