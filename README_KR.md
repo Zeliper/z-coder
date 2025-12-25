@@ -76,9 +76,46 @@ dir .claude-orchestration\
 
 </details>
 
-#### 2단계: Claude Code에서 초기화
+#### 2단계: Init 명령어 활성화
 
-프로젝트에서 Claude Code를 열고 다음 명령어를 실행합니다:
+`/orchestration-init`을 실행하기 전에 먼저 명령어 파일을 복사해야 합니다:
+
+<details>
+<summary><b>Linux / macOS</b></summary>
+
+```bash
+# commands 디렉토리 생성 및 init 명령어 복사
+mkdir -p .claude/commands
+cp .claude-orchestration/.claude/commands/orchestration-init.md .claude/commands/
+```
+
+</details>
+
+<details>
+<summary><b>Windows (PowerShell)</b></summary>
+
+```powershell
+# commands 디렉토리 생성 및 init 명령어 복사
+New-Item -ItemType Directory -Force -Path .claude\commands
+Copy-Item .claude-orchestration\.claude\commands\orchestration-init.md .claude\commands\
+```
+
+</details>
+
+<details>
+<summary><b>Windows (명령 프롬프트)</b></summary>
+
+```cmd
+REM commands 디렉토리 생성 및 init 명령어 복사
+mkdir .claude\commands
+copy .claude-orchestration\.claude\commands\orchestration-init.md .claude\commands\
+```
+
+</details>
+
+#### 3단계: Claude Code에서 초기화
+
+프로젝트에서 Claude Code를 열고 (이미 열려 있다면 재시작) 다음 명령어를 실행합니다:
 
 ```
 /orchestration-init

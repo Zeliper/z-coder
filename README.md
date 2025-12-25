@@ -76,9 +76,46 @@ dir .claude-orchestration\
 
 </details>
 
-#### Step 2: Initialize in Claude Code
+#### Step 2: Enable the Init Command
 
-Open Claude Code in your project and run:
+Before running `/orchestration-init`, you need to copy the command file first:
+
+<details>
+<summary><b>Linux / macOS</b></summary>
+
+```bash
+# Create the commands directory and copy the init command
+mkdir -p .claude/commands
+cp .claude-orchestration/.claude/commands/orchestration-init.md .claude/commands/
+```
+
+</details>
+
+<details>
+<summary><b>Windows (PowerShell)</b></summary>
+
+```powershell
+# Create the commands directory and copy the init command
+New-Item -ItemType Directory -Force -Path .claude\commands
+Copy-Item .claude-orchestration\.claude\commands\orchestration-init.md .claude\commands\
+```
+
+</details>
+
+<details>
+<summary><b>Windows (Command Prompt)</b></summary>
+
+```cmd
+REM Create the commands directory and copy the init command
+mkdir .claude\commands
+copy .claude-orchestration\.claude\commands\orchestration-init.md .claude\commands\
+```
+
+</details>
+
+#### Step 3: Initialize in Claude Code
+
+Open Claude Code in your project (or restart if already open) and run:
 
 ```
 /orchestration-init
