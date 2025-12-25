@@ -51,17 +51,32 @@ FOR each Step in task.steps:
     - 3회 실패 시 사용자 보고
 
   IF 빌드 성공:
+    - commit-agent spawn → [TASK-ID] 형식 커밋
+    - test-case-agent spawn → 테스트 케이스 생성
     - step.status = 'completed'
     - 결과 기록
 
   Step 완료 보고
 ```
 
-#### Phase 3: 마무리
+#### Phase 3: 테스트 대기
 ```
-1. 최종 결과 정리
-2. task 파일 → tasks/archive/ 이동
-3. 완료 보고
+모든 Step 완료 시:
+1. Task 상태 → pending_test
+2. 생성된 테스트 케이스 안내
+3. 사용자에게 테스트 실행 요청:
+   "/test-report TASK-001-T01 {결과}"
+```
+
+#### Phase 4: 마무리 (테스트 통과 후)
+```
+/test-report 성공 수신 시:
+1. task-manager-agent → 테스트 결과 기록
+2. 모든 테스트 PASSED 확인
+3. archive-task.py hook 실행:
+   - task 파일 → tasks/archive/
+   - 테스트 파일 → Test/Archive/
+4. 완료 보고
 ```
 
 ## 참고

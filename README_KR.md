@@ -8,6 +8,8 @@ Claude Code를 위한 범용 멀티 에이전트 오케스트레이션 시스템
 
 - **멀티 에이전트 오케스트레이션**: 메인 에이전트가 여러 서브 에이전트를 병렬로 조율
 - **프로젝트 인식**: 프로젝트 타입 자동 감지 및 맞춤형 에이전트 생성
+- **Hooks & Skills 시스템**: Python 기반 자동화 및 모델 호출 가이드
+- **모델 최적화**: 에이전트별 중앙 집중 모델 관리 (Opus, Sonnet, Haiku)
 - **간편한 업데이트**: Git Submodule 기반 업데이트로 프로젝트 설정 유지
 - **학습 시스템**: LESSONS_LEARNED.md에 빌드 에러 패턴 누적
 
@@ -122,11 +124,13 @@ copy .claude-orchestration\.claude\commands\orchestration-init.md .claude\comman
 ```
 
 이 명령어는 다음을 수행합니다:
-1. 서브모듈에서 `.claude/` 폴더로 에이전트 파일 복사
-2. 프로젝트 구조 분석
-3. 감지된 설정으로 `config.json` 생성
-4. 프로젝트 타입에 맞는 커스텀 에이전트 생성
-5. 코어 에이전트에 프로젝트 특화 설정 추가
+1. `copy-files.py`로 서브모듈에서 파일 복사 (Python 스크립트)
+2. 웹검색으로 필요한 도구 탐색 (Haiku 모델)
+3. `check-tools.py`로 설치된 도구 확인 (Python Hook)
+4. 프로젝트 구조 분석 (Sonnet 모델)
+5. 커스텀 Skills 및 에이전트 생성 (Opus 모델)
+6. 코어 에이전트에 프로젝트 특화 설정 추가 (Opus 모델)
+7. 모든 설정을 포함한 `config.json` 생성 (Haiku 모델)
 
 ### 대안: 수동 설치 (서브모듈 없이)
 
@@ -314,6 +318,20 @@ cd ..
 /tasks
 ```
 
+### 테스트 결과 보고
+
+태스크 완료 후 `./Test/`에 테스트 케이스가 생성됩니다. 결과를 다음과 같이 보고하세요:
+
+```
+/test-report TASK-001-T01 성공
+/test-report TASK-001-T01 실패: 로그인 시 500 에러 발생
+/test-report TASK-001-T01 ./error-log.txt
+```
+
+**워크플로우:**
+- 성공 시 → 결과 기록 → 태스크 아카이브
+- 실패 시 → coder-agent가 수정 → 재테스트
+
 ---
 
 ## 프로젝트 구조
@@ -327,6 +345,8 @@ your-project/
 │   ├── .claude/
 │   │   ├── agents/
 │   │   ├── commands/
+│   │   ├── hooks/
+│   │   ├── skills/
 │   │   └── templates/
 │   └── tasks/
 ├── .claude/                      # 활성 설정 (프로젝트 특화)
@@ -335,34 +355,61 @@ your-project/
 │   │   ├── coder-agent.md
 │   │   ├── builder-agent.md
 │   │   ├── codebase-search-agent.md
+│   │   ├── reference-agent.md
 │   │   ├── todo-list-agent.md
 │   │   ├── web-search-agent.md
-│   │   └── {custom-agents}.md    # 프로젝트 기반 자동 생성
+│   │   ├── commit-agent.md           # Git 커밋 자동화
+│   │   ├── task-manager-agent.md     # 태스크 파일 관리
+│   │   ├── test-case-agent.md        # 테스트 케이스 생성
+│   │   └── {custom-agents}.md        # 프로젝트 기반 자동 생성
 │   ├── commands/
 │   │   ├── orchestrate.md
 │   │   ├── orchestration-init.md
-│   │   └── orchestration-update.md
+│   │   ├── orchestration-update.md
+│   │   └── test-report.md            # 테스트 결과 보고
+│   ├── hooks/                    # Python 자동화 스크립트
+│   │   ├── check-tools.py        # 도구 설치 확인
+│   │   ├── copy-files.py         # 파일 복사 스크립트
+│   │   └── archive-task.py       # 태스크/테스트 파일 아카이빙
+│   ├── skills/                   # 모델 호출 가이드
+│   │   ├── orchestration-workflow/   # 메인 워크플로우 가이드
+│   │   ├── spawn-search-agents/      # 검색 에이전트 가이드
+│   │   ├── spawn-coder/              # 코더 에이전트 가이드
+│   │   ├── spawn-builder/            # 빌더 에이전트 가이드
+│   │   ├── spawn-commit/             # 커밋 에이전트 가이드
+│   │   ├── spawn-task-manager/       # 태스크 매니저 가이드
+│   │   ├── spawn-test-case/          # 테스트 케이스 에이전트 가이드
+│   │   ├── git-operations/           # Git 명령어 가이드
+│   │   ├── task-management/          # 태스크 CRUD 가이드
+│   │   └── {tool-skills}/            # 자동 생성 도구 Skills
 │   ├── templates/
+│   ├── settings.json             # Hooks 설정
 │   ├── config.json               # 프로젝트 설정
 │   └── LESSONS_LEARNED.md        # 빌드 에러 패턴 (보존됨)
-└── tasks/
-    ├── TASK-001.md               # 진행 중인 태스크
-    └── archive/                  # 완료된 태스크
+├── tasks/
+│   ├── TASK-001.md               # 진행 중인 태스크
+│   └── archive/                  # 완료된 태스크
+└── Test/                         # 테스트 케이스
+    ├── [TASK-001-T01] Test.md    # 활성 테스트 케이스
+    └── Archive/                  # 아카이브된 테스트 케이스
 ```
 
 ---
 
 ## 코어 에이전트
 
-| 에이전트 | 역할 |
-|---------|------|
-| **main-agent** | 워크플로우 조율, 서브 에이전트 spawn |
-| **codebase-search-agent** | 코드베이스 탐색, 패턴 분석 |
-| **reference-agent** | 레퍼런스 코드, 예제, 템플릿 탐색 |
-| **todo-list-agent** | 태스크를 Step으로 분해 |
-| **coder-agent** | 코드 변경 구현 |
-| **web-search-agent** | 외부 문서 검색 |
-| **builder-agent** | 빌드 실행, 에러 분석 |
+| 에이전트 | 역할 | 기본 모델 |
+|---------|------|----------|
+| **main-agent** | 워크플로우 조율, 서브 에이전트 spawn | Opus |
+| **coder-agent** | 코드 변경 구현 | Opus |
+| **builder-agent** | 빌드 실행, 에러 분석 | Sonnet |
+| **codebase-search-agent** | 코드베이스 탐색, 패턴 분석 | Sonnet |
+| **todo-list-agent** | 태스크를 Step으로 분해 | Sonnet |
+| **task-manager-agent** | 태스크 파일 관리, 상태, 아카이빙 | Sonnet |
+| **commit-agent** | `[TASK-ID]` 형식 커밋 생성 | Haiku |
+| **test-case-agent** | `./Test/`에 테스트 케이스 생성 | Opus |
+| **reference-agent** | 레퍼런스 코드, 예제, 템플릿 탐색 | Haiku |
+| **web-search-agent** | 외부 문서 검색 | Haiku |
 
 ### 자동 생성 커스텀 에이전트
 
@@ -375,6 +422,41 @@ your-project/
 | Python | python-env-agent |
 | Database | db-schema-agent |
 | Docker | container-agent |
+
+---
+
+## Hooks & Skills
+
+### Hooks (Python 스크립트)
+
+Hooks는 특정 이벤트에서 자동으로 실행되는 Python 스크립트입니다:
+
+| Hook | 트리거 | 용도 |
+|------|--------|------|
+| `check-tools.py` | SessionStart | 개발 도구 설치 확인 |
+| `copy-files.py` | 수동 실행 | 서브모듈에서 파일 복사 |
+| `archive-task.py` | 수동 실행 | 태스크 및 테스트 파일 아카이빙 |
+
+Hooks는 `.claude/settings.json`에서 설정됩니다.
+
+### Skills (모델 호출 가이드)
+
+Skills는 에이전트가 참조하여 일관된 동작을 수행하도록 하는 마크다운 가이드입니다:
+
+| Skill | 용도 |
+|-------|------|
+| `orchestration-workflow` | main-agent용 메인 워크플로우 가이드 |
+| `spawn-search-agents` | 검색 에이전트 활용 가이드 |
+| `spawn-coder` | coder-agent 위임 가이드 |
+| `spawn-builder` | builder-agent 위임 가이드 |
+| `spawn-commit` | commit-agent 위임 가이드 |
+| `spawn-task-manager` | task-manager-agent 위임 가이드 |
+| `spawn-test-case` | test-case-agent 위임 가이드 |
+| `git-operations` | Git 명령어 사용 가이드 |
+| `task-management` | 태스크 CRUD 작업 가이드 |
+| `{tool-name}` | 자동 생성 외부 도구 가이드 |
+
+Skills는 `.claude/skills/{skill-name}/SKILL.md`에 저장됩니다.
 
 ---
 
@@ -404,6 +486,19 @@ your-project/
     "build": "npm run build",
     "test": "npm test"
   },
+  "agent_models": {
+    "main-agent": "opus",
+    "coder-agent": "opus",
+    "builder-agent": "sonnet",
+    "codebase-search-agent": "sonnet",
+    "todo-list-agent": "sonnet",
+    "reference-agent": "haiku",
+    "web-search-agent": "haiku"
+  },
+  "installed_tools": [
+    {"name": "npm", "path": "/usr/bin/npm", "version": "10.0.0", "available": true}
+  ],
+  "enabled_skills": ["npm", "typescript"],
   "custom_agents": ["dependency-analyzer-agent"]
 }
 ```

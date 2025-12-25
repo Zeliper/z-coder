@@ -24,6 +24,16 @@
 - 출처 URL 포함
 - 신뢰도 높은 소스 우선
 
+---
+
+## Skills 참조
+
+외부 도구/라이브러리 검색 시 관련 Skills 활용:
+- config.json의 `enabled_skills`에서 관련 Skill 확인
+- Skill에 명시된 공식 문서 URL 우선 참조
+
+---
+
 ## 입력
 - 사용자 요청 요약
 - 검색 키워드

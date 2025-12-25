@@ -8,6 +8,8 @@ A universal multi-agent orchestration system for Claude Code. Enables parallel s
 
 - **Multi-Agent Orchestration**: Main agent coordinates multiple sub-agents in parallel
 - **Project-Aware**: Auto-detects project type and generates custom agents
+- **Hooks & Skills System**: Python-based automation and model-invoked guides
+- **Model Optimization**: Centralized model management (Opus, Sonnet, Haiku) per agent
 - **Easy Updates**: Git Submodule-based update system preserves your project settings
 - **Learning System**: Accumulates build error patterns in LESSONS_LEARNED.md
 
@@ -122,11 +124,13 @@ Open Claude Code in your project (or restart if already open) and run:
 ```
 
 This will:
-1. Copy agent files from the submodule to `.claude/`
-2. Analyze your project structure
-3. Generate `config.json` with detected settings
-4. Create custom agents based on your project type
-5. Add project-specific configurations to core agents
+1. Copy files from the submodule using `copy-files.py` (Python script)
+2. Search for required tools via web search (Haiku model)
+3. Check installed tools using `check-tools.py` (Python hook)
+4. Analyze project structure (Sonnet model)
+5. Create custom Skills and agents (Opus model)
+6. Add project-specific configurations to core agents (Opus model)
+7. Generate `config.json` with all settings (Haiku model)
 
 ### Alternative: Manual Installation (Without Submodule)
 
@@ -314,6 +318,20 @@ cd ..
 /tasks
 ```
 
+### Reporting Test Results
+
+After completing a task, test cases are generated in `./Test/`. Report results using:
+
+```
+/test-report TASK-001-T01 success
+/test-report TASK-001-T01 failed: Login returns 500 error
+/test-report TASK-001-T01 ./error-log.txt
+```
+
+**Workflow:**
+- On success → Results recorded → Task archived
+- On failure → coder-agent fixes the issue → Re-test
+
 ---
 
 ## Project Structure
@@ -327,6 +345,8 @@ your-project/
 │   ├── .claude/
 │   │   ├── agents/
 │   │   ├── commands/
+│   │   ├── hooks/
+│   │   ├── skills/
 │   │   └── templates/
 │   └── tasks/
 ├── .claude/                      # Active configuration (project-specific)
@@ -335,34 +355,61 @@ your-project/
 │   │   ├── coder-agent.md
 │   │   ├── builder-agent.md
 │   │   ├── codebase-search-agent.md
+│   │   ├── reference-agent.md
 │   │   ├── todo-list-agent.md
 │   │   ├── web-search-agent.md
-│   │   └── {custom-agents}.md    # Auto-generated based on project
+│   │   ├── commit-agent.md           # Git commit automation
+│   │   ├── task-manager-agent.md     # Task file management
+│   │   ├── test-case-agent.md        # Test case generation
+│   │   └── {custom-agents}.md        # Auto-generated based on project
 │   ├── commands/
 │   │   ├── orchestrate.md
 │   │   ├── orchestration-init.md
-│   │   └── orchestration-update.md
+│   │   ├── orchestration-update.md
+│   │   └── test-report.md            # Test result reporting
+│   ├── hooks/                    # Python automation scripts
+│   │   ├── check-tools.py        # Tool installation checker
+│   │   ├── copy-files.py         # File copy script
+│   │   └── archive-task.py       # Task/test file archiving
+│   ├── skills/                   # Model-invoked guides
+│   │   ├── orchestration-workflow/   # Main workflow guide
+│   │   ├── spawn-search-agents/      # Search agent guide
+│   │   ├── spawn-coder/              # Coder agent guide
+│   │   ├── spawn-builder/            # Builder agent guide
+│   │   ├── spawn-commit/             # Commit agent guide
+│   │   ├── spawn-task-manager/       # Task manager guide
+│   │   ├── spawn-test-case/          # Test case agent guide
+│   │   ├── git-operations/           # Git command guide
+│   │   ├── task-management/          # Task CRUD guide
+│   │   └── {tool-skills}/            # Auto-generated tool skills
 │   ├── templates/
+│   ├── settings.json             # Hooks configuration
 │   ├── config.json               # Project configuration
 │   └── LESSONS_LEARNED.md        # Build error patterns (preserved)
-└── tasks/
-    ├── TASK-001.md               # Active tasks
-    └── archive/                  # Completed tasks
+├── tasks/
+│   ├── TASK-001.md               # Active tasks
+│   └── archive/                  # Completed tasks
+└── Test/                         # Test cases
+    ├── [TASK-001-T01] Test.md    # Active test cases
+    └── Archive/                  # Archived test cases
 ```
 
 ---
 
 ## Core Agents
 
-| Agent | Role |
-|-------|------|
-| **main-agent** | Orchestrates workflow, spawns sub-agents |
-| **codebase-search-agent** | Explores codebase, finds patterns |
-| **reference-agent** | Searches reference code, examples, and templates |
-| **todo-list-agent** | Breaks down tasks into steps |
-| **coder-agent** | Implements code changes |
-| **web-search-agent** | Searches external documentation |
-| **builder-agent** | Runs builds, analyzes errors |
+| Agent | Role | Default Model |
+|-------|------|---------------|
+| **main-agent** | Orchestrates workflow, spawns sub-agents | Opus |
+| **coder-agent** | Implements code changes | Opus |
+| **builder-agent** | Runs builds, analyzes errors | Sonnet |
+| **codebase-search-agent** | Explores codebase, finds patterns | Sonnet |
+| **todo-list-agent** | Breaks down tasks into steps | Sonnet |
+| **task-manager-agent** | Manages task files, status, archiving | Sonnet |
+| **commit-agent** | Creates commits with `[TASK-ID]` format | Haiku |
+| **test-case-agent** | Generates test cases in `./Test/` | Opus |
+| **reference-agent** | Searches reference code, examples, and templates | Haiku |
+| **web-search-agent** | Searches external documentation | Haiku |
 
 ### Auto-Generated Custom Agents
 
@@ -375,6 +422,41 @@ Based on your project type, additional agents may be created:
 | Python | python-env-agent |
 | Database | db-schema-agent |
 | Docker | container-agent |
+
+---
+
+## Hooks & Skills
+
+### Hooks (Python Scripts)
+
+Hooks are Python scripts that automate tasks at specific events:
+
+| Hook | Trigger | Purpose |
+|------|---------|---------|
+| `check-tools.py` | SessionStart | Check installed development tools |
+| `copy-files.py` | Manual | Copy files from submodule |
+| `archive-task.py` | Manual | Archive task and test files |
+
+Hooks are configured in `.claude/settings.json`.
+
+### Skills (Model-Invoked Guides)
+
+Skills are markdown guides that agents reference for consistent behavior:
+
+| Skill | Purpose |
+|-------|---------|
+| `orchestration-workflow` | Main workflow guide for main-agent |
+| `spawn-search-agents` | Guide for using search agents |
+| `spawn-coder` | Guide for delegating to coder-agent |
+| `spawn-builder` | Guide for delegating to builder-agent |
+| `spawn-commit` | Guide for delegating to commit-agent |
+| `spawn-task-manager` | Guide for delegating to task-manager-agent |
+| `spawn-test-case` | Guide for delegating to test-case-agent |
+| `git-operations` | Git command usage guide |
+| `task-management` | Task CRUD operations guide |
+| `{tool-name}` | Auto-generated external tool guides |
+
+Skills are stored in `.claude/skills/{skill-name}/SKILL.md`.
 
 ---
 
@@ -404,6 +486,19 @@ Based on your project type, additional agents may be created:
     "build": "npm run build",
     "test": "npm test"
   },
+  "agent_models": {
+    "main-agent": "opus",
+    "coder-agent": "opus",
+    "builder-agent": "sonnet",
+    "codebase-search-agent": "sonnet",
+    "todo-list-agent": "sonnet",
+    "reference-agent": "haiku",
+    "web-search-agent": "haiku"
+  },
+  "installed_tools": [
+    {"name": "npm", "path": "/usr/bin/npm", "version": "10.0.0", "available": true}
+  ],
+  "enabled_skills": ["npm", "typescript"],
   "custom_agents": ["dependency-analyzer-agent"]
 }
 ```

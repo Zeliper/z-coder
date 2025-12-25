@@ -183,15 +183,63 @@ FOR each Step in task.steps:
     - 3회 실패 시 사용자 보고
 
   IF 빌드 성공:
+    - commit-agent 백그라운드 spawn → 커밋 생성
+    - test-case-agent 백그라운드 spawn → 테스트 케이스 생성
     - step.status = 'completed'
     - 결과 기록
 
   Step 완료 보고
 ```
 
-### 5. 마무리
-1. `todo-list-agent` → 최종 결과 정리
-2. task 파일 → `tasks/archive/` 이동
+### 5. 빌드 성공 후 처리
+
+빌드 성공 시 추가 작업:
+
+#### 5.1 커밋 생성
+`commit-agent` spawn:
+- 커밋 메시지: `[TASK-ID] Description`
+- 변경된 파일만 커밋
+- 민감 정보 파일 제외
+
+#### 5.2 테스트 케이스 생성
+`test-case-agent` spawn:
+- `./Test/[TASK-ID-TXX] Description.md` 생성
+- Step 내용 기반 테스트 항목 도출
+- 수동 테스트 가이드 작성
+
+### 6. 마무리 조건
+
+#### 아카이브 조건 (모든 조건 충족 필요)
+- 모든 Step: completed ✓
+- 모든 테스트: PASSED ✓
+
+#### 테스트 미완료 시
+```
+모든 Step 완료
+    ↓
+Task 상태: pending_test
+    ↓
+사용자에게 안내:
+"테스트를 실행하고 결과를 보고해주세요:
+/test-report TASK-001-T01 {결과}"
+```
+
+#### 모든 테스트 통과 시
+```
+/test-report 성공 수신
+    ↓
+task-manager-agent → 결과 기록
+    ↓
+archive-task.py hook → 파일 이동
+    ↓
+완료 보고
+```
+
+### 7. 기존 마무리 흐름 (테스트 통과 후)
+1. `task-manager-agent` → 테스트 결과 기록
+2. `archive-task.py` hook → 파일 아카이브
+   - task 파일 → `tasks/archive/`
+   - 테스트 파일 → `Test/Archive/`
 3. 완료 보고
 
 ## 중복 방지 로직
@@ -205,6 +253,42 @@ task 파일에 {agent_name}_result 섹션이 존재하면 해당 에이전트 sp
 .claude/agents/{에이전트명}.md 의 지시를 따르고,
 작업 완료 후 결과만 요약해서 보고해줘."
 ```
+
+---
+
+## Skills 활용
+
+Main-agent는 다음 오케스트레이션 Skills를 참조하여 일관된 작업 수행:
+
+### 필수 참조 Skills
+
+| Skill | 용도 | 위치 |
+|-------|------|------|
+| **orchestration-workflow** | 전체 워크플로우 가이드, Plan/Execute 모드 전환 | `.claude/skills/orchestration-workflow/` |
+| **spawn-search-agents** | 검색 에이전트 활용법 (codebase, reference, web) | `.claude/skills/spawn-search-agents/` |
+| **spawn-coder** | coder-agent 위임 가이드 | `.claude/skills/spawn-coder/` |
+| **spawn-builder** | builder-agent 위임 가이드 | `.claude/skills/spawn-builder/` |
+| **spawn-commit** | commit-agent 위임 가이드 (빌드 성공 후 커밋) | `.claude/skills/spawn-commit/` |
+| **spawn-test-case** | test-case-agent 위임 가이드 (테스트 케이스 생성) | `.claude/skills/spawn-test-case/` |
+| **spawn-task-manager** | task-manager-agent 위임 가이드 (태스크 관리) | `.claude/skills/spawn-task-manager/` |
+
+### Skills 활용 원칙
+
+1. **검색이 필요한 경우**: `spawn-search-agents` Skill 참조
+2. **코드 작성이 필요한 경우**: `spawn-coder` Skill 참조 → coder-agent 위임
+3. **빌드/테스트가 필요한 경우**: `spawn-builder` Skill 참조 → builder-agent 위임
+4. **커밋이 필요한 경우**: `spawn-commit` Skill 참조 → commit-agent 위임
+5. **테스트 케이스 생성**: `spawn-test-case` Skill 참조 → test-case-agent 위임
+6. **태스크 관리 작업**: `spawn-task-manager` Skill 참조 → task-manager-agent 위임
+7. **직접 코드 작성 금지**: 반드시 coder-agent를 통해 진행
+
+### 외부 도구 Skills
+
+config.json의 `enabled_skills`에 등록된 Skills 확인:
+- 해당 기능이 필요한 작업은 관련 Skill 참조
+- 예: ilspy Skill (디컴파일), npm Skill (패키지 관리)
+
+---
 
 ## 입력
 - 사용자 요청 (자연어)

@@ -105,6 +105,14 @@
 
 ---
 
+## Skills 참조
+
+프로젝트 타입별 레퍼런스 탐색 Skills 활용 가능:
+- config.json의 `enabled_skills`에서 관련 Skill 확인
+- 해당 프레임워크/도구 특화 레퍼런스 패턴 참조
+
+---
+
 <!-- ORCHESTRATION-PROJECT-CONFIG-START -->
 <!-- 프로젝트 특화 설정이 /orchestration-init에 의해 이 위치에 추가됩니다 -->
 <!-- ORCHESTRATION-PROJECT-CONFIG-END -->

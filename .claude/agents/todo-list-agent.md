@@ -22,7 +22,13 @@
   - M (Medium): 3-5개 파일, 중간 복잡도
   - L (Large): 5개 이상 파일, 높은 복잡도
 
-### 3. Task 파일 생성
+### 3. Skills 참조
+
+작업 분해 시 관련 Skills 확인:
+- config.json의 `enabled_skills`에서 필요 Skills 파악
+- 각 Step에서 활용할 Skills 명시
+
+### 4. Task 파일 생성
 
 `./tasks/TASK-{ID}.md` 형식:
 

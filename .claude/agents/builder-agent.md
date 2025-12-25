@@ -39,6 +39,34 @@
 ### 5. 결과 기록
 task 파일에 빌드/테스트 결과 기록
 
+---
+
+## Skills 및 Hooks 활용
+
+### Hooks 연동
+
+빌드 실패 시 Hooks가 자동으로 LESSONS_LEARNED.md를 업데이트:
+- PostToolUse Hook이 빌드 실패 감지
+- 자동으로 에러 패턴 기록
+
+### Skills 참조
+
+빌드 도구별 Skills 확인:
+
+| Skill | 용도 |
+|-------|------|
+| npm Skill | Node.js 프로젝트 빌드/테스트 |
+| dotnet Skill | .NET 프로젝트 빌드 |
+| cargo Skill | Rust 프로젝트 빌드 |
+
+### 활용 방법
+
+1. config.json의 `enabled_skills` 확인
+2. 현재 프로젝트 빌드 도구에 해당하는 Skill 참조
+3. Skill에 명시된 명령어 및 문제 해결 가이드 활용
+
+---
+
 ## 입력
 - task 파일 경로
 - Step 번호
