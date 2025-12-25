@@ -458,3 +458,363 @@ main-agent:
 - `/orchestration-init` 커맨드가 프로젝트 분석 후 특화 내용을 추가하는 구조
 - 에이전트 파일에 `<!-- AUTO-GENERATED -->` 섹션 위치를 미리 마킹
 - **파일 생성만 하고, 실제 작업은 수행하지 마세요**
+
+---
+
+## Part 3: 업데이트 시스템 (Git Submodule 기반)
+
+### 개요
+Git Submodule을 사용하여 오케스트레이션 시스템을 관리하고, `/orchestration-update` 명령어로 코어 에이전트만 업데이트하면서 프로젝트 특화 설정은 유지합니다.
+
+### 레포지토리 구조
+
+#### 오케스트레이션 레포지토리 (별도 Git 레포)
+````
+claude-orchestration/
+├── VERSION                          # 시멘틱 버전 (예: 1.0.0)
+├── .claude/
+│   ├── commands/
+│   │   ├── orchestrate.md
+│   │   ├── orchestration-init.md
+│   │   └── orchestration-update.md  # 업데이트 명령어
+│   ├── agents/
+│   │   ├── main-agent.md
+│   │   ├── codebase-search-agent.md
+│   │   ├── todo-list-agent.md
+│   │   ├── coder-agent.md
+│   │   ├── web-search-agent.md
+│   │   └── builder-agent.md
+│   ├── templates/
+│   │   └── custom-agent.template.md
+│   └── LESSONS_LEARNED.template.md
+├── tasks/
+│   ├── .gitkeep
+│   └── archive/.gitkeep
+└── README.md
+````
+
+#### 사용자 프로젝트 구조
+````
+user-project/
+├── .claude-orchestration/           # Git Submodule
+│   └── (오케스트레이션 레포 전체)
+├── .claude/                         # 실제 사용 파일 (복사본 + 프로젝트 특화)
+│   ├── commands/
+│   ├── agents/
+│   ├── templates/
+│   ├── config.json                  # 프로젝트 설정 + 버전 정보
+│   └── LESSONS_LEARNED.md
+└── tasks/
+````
+
+---
+
+### config.json 확장 스키마
+
+````json
+{
+  "orchestration": {
+    "version": "1.0.0",
+    "installed_at": "2025-01-15T10:00:00Z",
+    "updated_at": "2025-01-15T10:00:00Z",
+    "submodule_path": ".claude-orchestration"
+  },
+  "project": {
+    "name": "",
+    "description": "",
+    "type": "",
+    "languages": [],
+    "frameworks": []
+  },
+  "paths": {
+    "source": ["./src"],
+    "search": ["./"],
+    "excluded": ["node_modules", "bin", "obj", ".git", "dist", "build"],
+    "decompiled": [],
+    "assets": [],
+    "tests": []
+  },
+  "commands": {
+    "build": "",
+    "test": "",
+    "lint": "",
+    "run": ""
+  },
+  "conventions": {
+    "naming": "",
+    "architecture": "",
+    "notes": []
+  },
+  "custom_agents": []
+}
+````
+
+---
+
+### /orchestration-update 명령어
+
+#### 목적
+오케스트레이션 레포지토리의 최신 버전으로 코어 에이전트를 업데이트하면서 프로젝트 특화 설정을 유지합니다.
+
+#### 실행 흐름
+````
+/orchestration-update 실행
+
+1. 사전 검사
+   - .claude-orchestration 서브모듈 존재 확인
+   - config.json 존재 및 버전 정보 확인
+   - 서브모듈이 없으면 에러 메시지와 함께 설치 안내
+
+2. 서브모듈 업데이트
+   - git -C .claude-orchestration fetch origin
+   - git -C .claude-orchestration pull origin main
+
+3. 버전 비교
+   - 현재 버전: config.json의 orchestration.version
+   - 최신 버전: .claude-orchestration/VERSION
+   - 동일하면 "이미 최신 버전입니다" 메시지 출력 후 종료
+
+4. 백업 생성
+   - .claude/ → .claude.backup.{timestamp}/
+
+5. 코어 에이전트 파일 업데이트
+   FOR each agent in .claude-orchestration/.claude/agents/:
+     IF .claude/agents/{agent} 존재:
+       - 기존 파일에서 프로젝트 특화 섹션 추출 (마커 기반)
+       - 서브모듈의 새 코어로 교체
+       - 프로젝트 특화 섹션 복원
+     ELSE:
+       - 신규 에이전트 파일 복사
+
+6. 커스텀 에이전트 처리
+   FOR each custom_agent in config.json.custom_agents:
+     IF .claude-orchestration/.claude/templates/{agent}.template.md 존재:
+       - 템플릿 기반 스마트 병합
+     ELSE:
+       - 그대로 유지 (프로젝트 특화 에이전트)
+
+7. 커맨드 파일 업데이트
+   - .claude/commands/ 전체 교체
+
+8. 템플릿 업데이트
+   - .claude/templates/ 전체 교체
+
+9. LESSONS_LEARNED.md 처리
+   - 절대 덮어쓰지 않음 (프로젝트별 학습 내용 보존)
+
+10. config.json 업데이트
+    - orchestration.version = 새 버전
+    - orchestration.updated_at = 현재 시간
+
+11. 백업 정리
+    - 성공 시: .claude.backup.{timestamp}/ 삭제
+    - 실패 시: 백업에서 복원
+
+12. 결과 보고
+    - 업데이트된 파일 목록
+    - 버전 변경 정보 (예: 1.0.0 → 1.1.0)
+    - 신규 추가된 에이전트 목록
+````
+
+#### 옵션
+| 옵션 | 설명 |
+|------|------|
+| --version {ver} | 특정 버전으로 업데이트 (예: --version 1.0.0) |
+| --dry-run | 실제 변경 없이 업데이트 내용 미리보기 |
+| --force | 버전 확인 없이 강제 업데이트 |
+
+---
+
+### 파일 병합 알고리즘
+
+#### 마커 기반 분리
+코어 에이전트 파일은 다음 구조를 따릅니다:
+
+````markdown
+# agent-name
+
+[코어 부분 - 업데이트 대상]
+...
+
+---
+## 프로젝트 특화 설정 (자동 생성됨 - /orchestration-init)
+<!-- ORCHESTRATION-PROJECT-CONFIG-START -->
+
+[프로젝트 특화 부분 - 보존 대상]
+...
+
+<!-- ORCHESTRATION-PROJECT-CONFIG-END -->
+````
+
+#### 코어 에이전트 병합 로직
+````python
+def merge_agent_file(old_file, new_core):
+    START_MARKER = "<!-- ORCHESTRATION-PROJECT-CONFIG-START -->"
+    END_MARKER = "<!-- ORCHESTRATION-PROJECT-CONFIG-END -->"
+
+    # 기존 파일에서 프로젝트 설정 추출
+    if START_MARKER in old_file:
+        start_idx = old_file.index(START_MARKER)
+        end_idx = old_file.index(END_MARKER) + len(END_MARKER)
+        project_config = old_file[start_idx:end_idx]
+    else:
+        project_config = None
+
+    # 새 코어에 프로젝트 설정 병합
+    if project_config:
+        # 새 코어의 마커 위치에 기존 프로젝트 설정 삽입
+        if START_MARKER in new_core:
+            # 새 코어에도 마커가 있으면 해당 위치에 삽입
+            marker_start = new_core.index(START_MARKER)
+            marker_end = new_core.index(END_MARKER) + len(END_MARKER)
+            return new_core[:marker_start] + project_config + new_core[marker_end:]
+        else:
+            # 새 코어에 마커가 없으면 끝에 추가
+            return new_core + "\n\n" + project_config
+    else:
+        return new_core
+````
+
+#### 커스텀 에이전트 처리
+````python
+def handle_custom_agent(agent_name, old_file):
+    template_path = f".claude-orchestration/.claude/templates/{agent_name}.template.md"
+
+    if exists(template_path):
+        # 오케스트레이션 레포에 해당 에이전트 템플릿이 추가됨
+        # 템플릿 기반으로 스마트 병합
+        new_template = read(template_path)
+        return merge_agent_file(old_file, new_template)
+    else:
+        # 순수 프로젝트 특화 에이전트 - 그대로 유지
+        return old_file
+````
+
+---
+
+### /orchestration-init 수정사항
+
+서브모듈 기반 초기화를 지원하도록 수정합니다:
+
+````
+/orchestration-init 실행
+
+1. 서브모듈 존재 확인
+   IF .claude-orchestration 없음:
+     - 사용자에게 서브모듈 추가 안내
+     - "git submodule add {repo-url} .claude-orchestration" 실행 유도
+     - 또는 --no-submodule 옵션으로 기존 복사 방식 사용
+
+2. 서브모듈에서 파일 복사
+   - .claude-orchestration/.claude/ → .claude/
+   - .claude-orchestration/tasks/ → tasks/
+
+3. 프로젝트 분석 (기존 로직 유지)
+   - 언어/프레임워크 식별
+   - 빌드/테스트 명령어 추출
+   - 커스텀 에이전트 생성
+
+4. config.json에 버전 정보 추가
+   - orchestration.version = .claude-orchestration/VERSION 내용
+   - orchestration.installed_at = 현재 시간
+   - orchestration.submodule_path = ".claude-orchestration"
+````
+
+#### 옵션 추가
+| 옵션 | 설명 |
+|------|------|
+| --no-submodule | 서브모듈 없이 직접 복사 방식으로 초기화 |
+
+---
+
+### 롤백 메커니즘
+
+#### 자동 롤백 (업데이트 실패 시)
+````
+업데이트 프로세스 중 에러 발생 시:
+1. .claude.backup.{timestamp}/ 존재 확인
+2. 현재 .claude/ 삭제
+3. .claude.backup.{timestamp}/ → .claude/ 이름 변경
+4. "업데이트 실패. 이전 버전으로 복구되었습니다." 메시지
+````
+
+#### 수동 롤백 (특정 버전으로)
+````
+/orchestration-update --version 1.0.0
+
+1. git -C .claude-orchestration checkout v1.0.0
+2. 일반 업데이트 프로세스 실행
+````
+
+---
+
+### 사용 시나리오
+
+#### 최초 설치
+````bash
+# 1. 사용자 프로젝트에서 서브모듈 추가
+git submodule add https://github.com/{repo}/claude-orchestration .claude-orchestration
+git submodule update --init
+
+# 2. Claude Code에서 초기화
+/orchestration-init
+````
+
+#### 업데이트
+````bash
+# Claude Code에서
+/orchestration-update
+
+# 또는 특정 버전으로
+/orchestration-update --version 1.2.0
+
+# 미리보기
+/orchestration-update --dry-run
+````
+
+#### 강제 재초기화
+````bash
+/orchestration-init --force
+````
+
+---
+
+### VERSION 파일 형식
+
+오케스트레이션 레포지토리 루트의 VERSION 파일:
+````
+1.0.0
+````
+
+시멘틱 버전(Semantic Versioning)을 따릅니다:
+- MAJOR: 호환되지 않는 변경 (에이전트 구조 변경 등)
+- MINOR: 새로운 기능 추가 (새 에이전트, 새 옵션 등)
+- PATCH: 버그 수정, 프롬프트 개선
+
+Git 태그와 동기화: `v1.0.0`, `v1.1.0` 등
+
+---
+
+### 추가 명령어
+
+| 명령어 | 설명 |
+|--------|------|
+| /orchestration-update | 최신 버전으로 업데이트 |
+| /orchestration-update --version {ver} | 특정 버전으로 업데이트 |
+| /orchestration-update --dry-run | 업데이트 미리보기 |
+| /orchestration-update --force | 강제 업데이트 |
+
+---
+
+### 생성/수정할 파일
+
+#### 신규 생성
+- `VERSION` - 버전 파일 (오케스트레이션 레포 루트)
+- `.claude/commands/orchestration-update.md` - 업데이트 명령어
+
+#### 수정
+- `.claude/commands/orchestration-init.md` - 서브모듈 기반 초기화 로직 추가
+- `.claude/agents/*.md` - 마커 표준화 적용
+  - `<!-- ORCHESTRATION-PROJECT-CONFIG-START -->`
+  - `<!-- ORCHESTRATION-PROJECT-CONFIG-END -->`
+- `README.md` - 서브모듈 설치 및 업데이트 안내 추가
