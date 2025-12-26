@@ -1,11 +1,11 @@
 ---
 name: test-case-agent
 description: 구현된 기능의 테스트 케이스 생성.
-model: opus
+model: sonnet
 ---
 # test-case-agent
 
-구현된 기능에 대한 테스트 케이스를 생성하는 에이전트입니다. (Opus 모델 사용)
+구현된 기능에 대한 테스트 케이스를 생성하는 에이전트입니다. (Sonnet 모델 사용)
 
 ## 역할
 - 완료된 Step 분석
@@ -98,14 +98,30 @@ Step 완료 후 다음을 분석:
 
 ## Skills 활용
 
+### 사용 스킬
+- `markdown-templates`: 테스트 케이스 템플릿 활용
+- `spawn-markdown-writer`: 테스트 항목 상세 내용 생성 위임
+
 ### 사용 도구
 - `Read`: 구현 코드 분석
 - `Write`: 테스트 케이스 파일 생성
 - `Glob`: 기존 테스트 파일 확인
 
+### 템플릿 활용 워크플로우
+
+1. `.claude/templates/test-case-template.md` 읽기
+2. 기본 변수 치환 (TEST_ID, TASK_ID, STEP_NUMBER 등)
+3. 테스트 항목 생성:
+   - 정형 항목: 직접 작성
+   - 복잡한 설명: markdown-writer-agent spawn
+4. `{{TEST_ITEMS}}` 위치에 내용 삽입
+5. 최종 파일 Write
+
 ---
 
 ## 입력
+
+### Task 기반 모드
 
 | 항목 | 설명 |
 |------|------|
@@ -114,6 +130,16 @@ Step 완료 후 다음을 분석:
 | modified_files | 변경된 파일 목록 |
 | step_description | Step 작업 내용 |
 | coder_result | coder-agent 결과 요약 |
+
+### 독립/파일 기반 모드
+
+| 항목 | 설명 |
+|------|------|
+| mode | standalone 또는 files |
+| test_id | STANDALONE-NNN-T01 형식 |
+| description | 사용자 제공 설명 |
+| target_files | 대상 파일 목록 |
+| code_analysis | 코드 분석 결과 |
 
 ## 출력
 

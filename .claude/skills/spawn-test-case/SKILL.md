@@ -14,11 +14,19 @@ allowed-tools: Task, Read
 
 commit-agent가 성공적으로 완료된 후 test-case-agent를 spawn합니다.
 
+## 관련 명령어
+
+- `/create-testcase`: 사용자가 직접 테스트 케이스 생성 요청
+  - `--task TASK-ID`: Task 기반 생성
+  - `--standalone {설명}`: 독립 테스트 케이스
+  - `--files {파일들} {설명}`: 파일 기반 생성
+
 ## 언제 사용하나?
 
-- commit-agent 성공 후
+- commit-agent 성공 후 (자동 워크플로우)
 - 각 Step 완료 시
 - 새 기능 구현 완료 시
+- `/create-testcase` 명령어 실행 시
 
 ## 사전 조건
 
@@ -64,6 +72,38 @@ coder-agent 결과:
 test-case-agent 결과 확인:
 - COMPLETED: 테스트 케이스 생성 완료
 - FAILED: 생성 실패 (드문 경우)
+
+---
+
+## 독립/파일 기반 Spawn
+
+`/create-testcase --standalone` 또는 `--files` 사용 시:
+
+### Spawn 실행
+
+```
+"백그라운드에서 test-case-agent 역할로 다음 작업을 수행해줘:
+
+모드: standalone (또는 files)
+테스트 ID: STANDALONE-001-T01
+설명: {사용자 제공 설명}
+대상 파일:
+- {파일 목록}
+
+코드 분석:
+- {분석 결과}
+
+.claude/agents/test-case-agent.md 의 지시를 따르고,
+작업 완료 후 결과만 요약해서 보고해줘."
+```
+
+### 독립 테스트 ID 규칙
+
+- 형식: `STANDALONE-{NNN}-T{XX}`
+- 순번: `./Test/` 폴더의 기존 STANDALONE 번호 확인 후 +1
+- 예시: STANDALONE-001-T01, STANDALONE-002-T01
+
+---
 
 ## 정보 전달 항목
 

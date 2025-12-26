@@ -89,6 +89,13 @@ python3 .claude/hooks/archive-task.py TASK-001
 | Skill | 용도 |
 |-------|------|
 | **task-management** | 태스크 CRUD 및 상태 관리 가이드 |
+| **markdown-templates** | Task 파일 템플릿 및 변수 치환 |
+
+### 템플릿 활용
+Task 파일 생성/수정 시:
+1. `.claude/templates/task-template.md` 참조
+2. `.claude/templates/step-status-template.md`로 Step 상태 포맷팅
+3. `.claude/templates/agent-result-template.md`로 결과 기록
 
 ### 사용 도구
 - `Read`: Task 파일 읽기

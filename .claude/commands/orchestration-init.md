@@ -420,10 +420,16 @@ allowed-tools: Bash, Read, Glob
     "lint": "{lint 명령어}"
   },
   "agent_models": {
-    "main-agent": "opus",
+    "main-agent": "sonnet",
+    "decision-agent": "opus",
     "coder-agent": "opus",
     "builder-agent": "sonnet",
-    "codebase-search-agent": "sonnet",
+    "orchestration-update-agent": "sonnet",
+    "markdown-writer-agent": "haiku",
+    "task-manager-agent": "sonnet",
+    "test-case-agent": "sonnet",
+    "commit-agent": "sonnet",
+    "codebase-search-agent": "haiku",
     "todo-list-agent": "sonnet",
     "reference-agent": "haiku",
     "web-search-agent": "haiku"
@@ -469,15 +475,21 @@ allowed-tools: Bash, Read, Glob
 - .claude/settings.json
 
 ### 코어 에이전트 (프로젝트 특화 적용)
-| 에이전트 | 모델 |
-|---------|------|
-| main-agent | Opus |
-| coder-agent | Opus |
-| builder-agent | Sonnet |
-| codebase-search-agent | Sonnet |
-| todo-list-agent | Sonnet |
-| reference-agent | Haiku |
-| web-search-agent | Haiku |
+| 에이전트 | 모델 | 역할 |
+|---------|------|------|
+| main-agent | Sonnet | 오케스트레이션 조율 |
+| decision-agent | Opus | 고수준 판단 (Plan Mode, 아키텍처) |
+| coder-agent | Opus | 코드 구현 |
+| builder-agent | Sonnet | 빌드/테스트 실행 |
+| orchestration-update-agent | Sonnet | 시스템 업데이트 |
+| markdown-writer-agent | Haiku | 비정형 마크다운 생성 |
+| task-manager-agent | Sonnet | 태스크 파일 관리 |
+| test-case-agent | Sonnet | 테스트 케이스 생성 |
+| commit-agent | Sonnet | 커밋 생성 |
+| codebase-search-agent | Haiku | 코드베이스 탐색 |
+| todo-list-agent | Sonnet | 할일 목록 관리 |
+| reference-agent | Haiku | 레퍼런스 조회 |
+| web-search-agent | Haiku | 웹 검색 |
 
 ### 감지된 도구 및 Skills
 | 도구 | 상태 | Skill 생성 |
