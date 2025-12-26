@@ -28,7 +28,14 @@ def get_project_root() -> Path:
     # 현재 스크립트 위치에서 추론
     script_path = Path(__file__).resolve()
     # .claude/hooks/copy-files.py → 프로젝트 루트
-    return script_path.parent.parent.parent
+    # 또는 .claude-orchestration/.claude/hooks/copy-files.py → 프로젝트 루트
+    project_root = script_path.parent.parent.parent
+
+    # 서브모듈 내에서 실행된 경우 (.claude-orchestration 폴더 내)
+    if project_root.name == ".claude-orchestration":
+        project_root = project_root.parent
+
+    return project_root
 
 
 def copy_directory(src: Path, dst: Path, exclude_files: list[str] = None):

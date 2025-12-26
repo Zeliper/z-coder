@@ -22,7 +22,12 @@ def get_project_root() -> Path:
     if os.environ.get("CLAUDE_PROJECT_DIR"):
         return Path(os.environ["CLAUDE_PROJECT_DIR"])
     # Infer from script location: .claude/hooks/file-ops.py -> project root
-    return Path(__file__).resolve().parent.parent.parent
+    # or .claude-orchestration/.claude/hooks/file-ops.py -> project root
+    project_root = Path(__file__).resolve().parent.parent.parent
+    # If running from submodule, go up one more level
+    if project_root.name == ".claude-orchestration":
+        project_root = project_root.parent
+    return project_root
 
 
 def resolve_path(path_str: str) -> Path:
