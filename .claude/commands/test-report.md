@@ -69,10 +69,10 @@ TASK-001-T01 → TASK-001 (Task ID) + T01 (Test 번호)
          → 모든 테스트 PASSED 확인
          → 아카이브 (archive-task.py)
     ↓
-[실패] → main-agent
-         → 에러 분석
-         → coder-agent 수정 지시
-         → 테스트 케이스 업데이트
+[실패] → coder-agent 직접 spawn
+         → 에러 분석 및 수정
+         → builder-agent로 재빌드
+         → commit-agent로 재커밋
 ```
 
 ---
@@ -120,38 +120,26 @@ python3 .claude/hooks/archive-task.py TASK-001
 - 관련 코드 위치 추정
 - 수정 방향 도출
 
-### 2. main-agent 활성화
+### 2. coder-agent 수정 실행
 
-`main-agent.md` 지시에 따라:
-```
-"테스트 실패로 인한 수정 작업:
-Task: TASK-001
-테스트: TASK-001-T01
-에러: {에러 내용}
-
-coder-agent를 통해 수정 진행"
-```
-
-### 3. coder-agent 수정
-
-coder-agent 호출:
+coder-agent spawn:
 - 에러 원인 분석
 - 코드 수정
 - 관련 파일 업데이트
 
-### 4. 재빌드 및 재커밋
+### 3. 재빌드 및 재커밋
 
 ```
 coder-agent → builder-agent → commit-agent
 ```
 
-### 5. 테스트 케이스 업데이트
+### 4. 테스트 케이스 업데이트
 
 필요 시 test-case-agent 호출:
 - 테스트 조건 수정
 - 예상 결과 업데이트
 
-### 6. 재테스트 안내
+### 5. 재테스트 안내
 
 사용자에게 재테스트 요청:
 ```

@@ -331,7 +331,6 @@ model: {sonnet | opus | haiku | inherit}
 각 코어 에이전트의 `<!-- ORCHESTRATION-PROJECT-CONFIG-START -->` 마커 내에 프로젝트 특화 내용 추가:
 
 **대상 에이전트:**
-- main-agent.md
 - coder-agent.md
 - builder-agent.md
 - codebase-search-agent.md
@@ -438,7 +437,6 @@ model: {sonnet | opus | haiku | inherit}
     "lint": "{lint 명령어}"
   },
   "agent_models": {
-    "main-agent": "sonnet",
     "decision-agent": "opus",
     "coder-agent": "opus",
     "builder-agent": "sonnet",
@@ -495,7 +493,6 @@ model: {sonnet | opus | haiku | inherit}
 ### 코어 에이전트 (프로젝트 특화 적용)
 | 에이전트 | 모델 | 역할 |
 |---------|------|------|
-| main-agent | Sonnet | 오케스트레이션 조율 |
 | decision-agent | Opus | 고수준 판단 (Plan Mode, 아키텍처) |
 | coder-agent | Opus | 코드 구현 |
 | builder-agent | Sonnet | 빌드/테스트 실행 |

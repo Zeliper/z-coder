@@ -101,9 +101,9 @@ model: haiku
   - 새 레퍼런스/예제 생성 고려
 ```
 
-## main-agent와의 협업
+## /orchestrate와의 협업
 
-1. main-agent가 새 기능 구현 요청 수신
+1. /orchestrate가 새 기능 구현 요청 수신
 2. reference-agent spawn하여 관련 레퍼런스 탐색
 3. 레퍼런스 발견 시 → coder-agent에 참고 자료로 전달
 4. 레퍼런스 없음 시 → web-search-agent로 외부 예제 검색

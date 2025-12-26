@@ -10,7 +10,7 @@ allowed-tools: Task, Read
 
 ## 핵심 원칙
 
-**main-agent(Sonnet)가 판단하기 어려운 경우에만 호출합니다.**
+**/orchestrate가 직접 판단하기 어려운 경우에만 호출합니다.**
 
 Opus 호출을 최소화하여 비용 효율을 유지합니다.
 
@@ -30,7 +30,7 @@ Opus 호출을 최소화하여 비용 효율을 유지합니다.
 3. **동일 에러 3회 이상 반복**
    - 근본 원인 분석 필요
 
-### 수동 트리거 (main-agent 판단)
+### 수동 트리거 (/orchestrate 판단)
 
 - 사용자 요청이 모호할 때
 - 아키텍처 변경이 필요할 때
@@ -41,7 +41,7 @@ Opus 호출을 최소화하여 비용 효율을 유지합니다.
 
 ## 호출하지 않는 경우
 
-다음은 main-agent(Sonnet)가 직접 처리:
+다음은 /orchestrate가 직접 처리:
 
 - 단순 spawn 및 결과 전달
 - 명확한 Step 실행
@@ -130,7 +130,7 @@ decision-agent 결과:
 - 선택지: ["DB", "API", "프론트엔드"]
 ```
 
-**main-agent 행동:**
+**/orchestrate 행동:**
 1. Plan Mode로 전환
 2. decision-agent 제안 질문을 AskUserQuestion으로 사용자에게 전달
 3. 사용자 응답 대기
@@ -143,7 +143,7 @@ decision-agent 결과:
 - 권장 옵션: JWT (architecture인 경우)
 ```
 
-**main-agent 행동:**
+**/orchestrate 행동:**
 1. Execute Mode 유지
 2. decision-agent 권장안으로 진행
 3. todo-list-agent spawn
@@ -156,7 +156,7 @@ decision-agent 결과:
 - 필요 정보: 현재 데이터베이스 스키마
 ```
 
-**main-agent 행동:**
+**/orchestrate 행동:**
 1. 추가 검색 에이전트 spawn
 2. 결과 수신 후 decision-agent 재호출
 
@@ -167,7 +167,7 @@ decision-agent 결과:
 ### 새 태스크 수신 시
 
 ```
-1. 검색 에이전트 병렬 spawn (main-agent/Sonnet)
+1. 검색 에이전트 병렬 spawn (/orchestrate)
    ├─ codebase-search-agent
    ├─ reference-agent
    └─ web-search-agent

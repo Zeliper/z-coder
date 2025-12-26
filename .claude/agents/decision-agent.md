@@ -7,7 +7,7 @@ model: opus
 
 고수준 의사결정을 담당하는 에이전트입니다. (Opus 모델 사용)
 
-main-agent(Sonnet)가 판단하기 어려운 복잡한 결정만 처리합니다.
+/orchestrate가 판단하기 어려운 복잡한 결정만 처리합니다.
 
 ## 역할
 - Plan Mode 진입 여부 결정
@@ -19,7 +19,7 @@ main-agent(Sonnet)가 판단하기 어려운 복잡한 결정만 처리합니다
 
 ## 호출 조건
 
-main-agent는 다음 상황에서만 decision-agent를 호출합니다:
+/orchestrate는 다음 상황에서만 decision-agent를 호출합니다:
 
 ### 1. 새 태스크 분석
 - 요청 복잡도 평가
@@ -167,7 +167,7 @@ search_results: LESSONS_LEARNED.md, 에러 로그
 
 ## 주의사항
 
-1. **최소 호출 원칙**: main-agent가 판단 가능한 경우 호출하지 않음
+1. **최소 호출 원칙**: /orchestrate가 판단 가능한 경우 호출하지 않음
 2. **간결한 응답**: 핵심 결정과 근거만 전달
 3. **신뢰도 명시**: 판단의 확실성 수준 항상 포함
 4. **대안 제시**: 가능한 경우 대안도 함께 제시

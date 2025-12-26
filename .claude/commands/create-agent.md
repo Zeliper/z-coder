@@ -22,7 +22,7 @@
 │ Step 2: [Opus] 코드베이스 탐색 및 패턴 분석                 │
 │ Step 3: [Opus] 에이전트 설계 (사용자 확인)                  │
 │ Step 4: [Opus] 파일 생성 (agent, skill, hook)              │
-│ Step 5: [Sonnet] 시스템 통합 (config.json, main-agent)      │
+│ Step 5: [Sonnet] 시스템 통합 (config.json)                   │
 │ Step 6: [Haiku] 결과 보고                                   │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -272,41 +272,15 @@ if __name__ == "__main__":
 }
 ```
 
-### 5.2 main-agent.md 통합 (유형별)
+### 5.2 통합 안내
 
-main-agent.md의 적절한 섹션에 새 에이전트 추가:
+새 에이전트가 생성되면 `/orchestrate` 커맨드에서 config.json의 custom_agents를 참조하여 자동으로 활용합니다.
 
-**search 유형**: Phase 1 검색 에이전트 목록에 추가
-```markdown
-### Phase 1: 정보 수집
-병렬 spawn:
-- codebase-search-agent
-- reference-agent
-- {new-agent-name}  ← 추가
-```
-
-**step 유형**: Step 실행 에이전트 설명에 추가
-```markdown
-### Step 실행 에이전트
-필요시 다음 에이전트들을 활용:
-- coder-agent: 코드 작성
-- {new-agent-name}: {역할}  ← 추가
-```
-
-**utility 유형**: 유틸리티 에이전트 목록에 추가
-```markdown
-### 유틸리티 에이전트
-- commit-agent: 커밋 생성
-- test-case-agent: 테스트 케이스 생성
-- {new-agent-name}: {역할}  ← 추가
-```
-
-**standalone 유형**: 독립 에이전트 섹션 추가 (없으면 생성)
-```markdown
-### 독립 에이전트
-직접 호출로만 사용:
-- {new-agent-name}: {역할}
-```
+**통합 유형별 동작:**
+- **search 유형**: Phase 1에서 병렬 spawn됨
+- **step 유형**: Step 실행 시 필요에 따라 호출
+- **utility 유형**: 특정 이벤트(빌드 성공 등) 시 호출
+- **standalone 유형**: 직접 Task tool로만 호출
 
 ---
 
@@ -332,7 +306,6 @@ main-agent.md의 적절한 섹션에 새 에이전트 추가:
 
 ### 업데이트된 파일
 - .claude/config.json (있는 경우)
-- .claude/agents/main-agent.md
 
 ### 사용 방법
 

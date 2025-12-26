@@ -15,6 +15,19 @@ allowed-tools: Task, Read, Glob, Grep
 - 외부 라이브러리 문서가 필요할 때
 - 유사 구현 예제가 필요할 때
 
+## 중요: /orchestrate는 직접 검색 금지
+
+**/orchestrate 커맨드는 Glob, Grep, Search를 직접 사용하면 안 됩니다.**
+반드시 아래 검색 에이전트를 Task tool로 spawn해야 합니다.
+
+### 절대 금지: Bash로 claude 명령어 실행
+
+- ❌ `claude --agent {agent-name}` 사용 금지
+- ❌ `claude task --subagent {agent-name}` 사용 금지
+- ❌ Bash tool로 claude CLI 실행 금지
+
+**반드시 Task tool (function call)을 사용하세요.**
+
 ## 에이전트별 역할
 
 | 에이전트 | 용도 | 모델 |

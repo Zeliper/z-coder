@@ -202,8 +202,8 @@ python .claude/hooks/file-ops.py move --src .claude.backup.{timestamp} --dst .cl
 - 상태: COMPLETED
 - 버전 변경: v{old} → v{new}
 - 업데이트된 파일:
-  - .claude/agents/main-agent.md
   - .claude/agents/coder-agent.md
+  - .claude/agents/builder-agent.md
   - ...
 - 신규 추가된 파일:
   - .claude/agents/new-agent.md (해당하는 경우)
@@ -230,7 +230,7 @@ python .claude/hooks/file-ops.py move --src .claude.backup.{timestamp} --dst .cl
 - 현재 버전: v{current}
 - 최신 버전: v{latest}
 - 변경 예정:
-  - .claude/agents/main-agent.md (병합)
+  - .claude/agents/coder-agent.md (병합)
   - .claude/commands/orchestrate.md (교체)
   - ...
 ```
