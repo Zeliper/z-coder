@@ -39,9 +39,32 @@ Task tool 호출:
    - 사용자 요청 전체를 prompt로 전달
    - 옵션(--task, --ref)도 함께 전달
 
-3. **결과 전달**
-   - main-agent 결과를 사용자에게 전달
-   - 추가 입력이 필요하면 사용자에게 질문
+3. **결과 처리 및 사용자 입력 중계**
+
+   main-agent 결과에서 `USER_INPUT_REQUIRED` 확인:
+
+   ```
+   IF 결과에 USER_INPUT_REQUIRED 포함:
+     SWITCH type:
+       "choice" → AskUserQuestion으로 선택지 제시
+       "confirm" → AskUserQuestion으로 예/아니오 질문
+       "plan" → EnterPlanMode 진입, 계획 작성 후 사용자 승인
+
+     사용자 답변 수신 후:
+       TaskOutput으로 main-agent resume (agent_id 사용)
+       prompt: "사용자 답변: {answer}"
+
+   ELSE:
+     결과를 사용자에게 전달
+   ```
+
+4. **Plan Mode 처리**
+
+   main-agent가 `type: "plan"` 반환 시:
+   - 현재 세션에서 EnterPlanMode 호출
+   - main-agent가 전달한 계획 내용을 plan 파일에 작성
+   - 사용자 승인 후 ExitPlanMode
+   - main-agent resume하여 실행 계속
 
 ---
 
