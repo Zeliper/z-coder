@@ -6,7 +6,7 @@ A universal multi-agent orchestration system for Claude Code. Enables parallel s
 
 ## Features
 
-- **Multi-Agent Orchestration**: Main agent coordinates multiple sub-agents in parallel
+- **Multi-Agent Orchestration**: `/orchestrate` command coordinates multiple sub-agents in parallel
 - **Project-Aware**: Auto-detects project type and generates custom agents
 - **Hooks & Skills System**: Python-based automation and model-invoked guides
 - **Model Optimization**: Centralized model management (Opus, Sonnet, Haiku) per agent
@@ -351,7 +351,6 @@ your-project/
 │   └── tasks/
 ├── .claude/                      # Active configuration (project-specific)
 │   ├── agents/
-│   │   ├── main-agent.md
 │   │   ├── coder-agent.md
 │   │   ├── builder-agent.md
 │   │   ├── codebase-search-agent.md
@@ -400,7 +399,6 @@ your-project/
 
 | Agent | Role | Default Model |
 |-------|------|---------------|
-| **main-agent** | Orchestrates workflow, spawns sub-agents | Opus |
 | **coder-agent** | Implements code changes | Opus |
 | **builder-agent** | Runs builds, analyzes errors | Sonnet |
 | **codebase-search-agent** | Explores codebase, finds patterns | Sonnet |
@@ -445,7 +443,7 @@ Skills are markdown guides that agents reference for consistent behavior:
 
 | Skill | Purpose |
 |-------|---------|
-| `orchestration-workflow` | Main workflow guide for main-agent |
+| `orchestration-workflow` | Main workflow guide for /orchestrate command |
 | `spawn-search-agents` | Guide for using search agents |
 | `spawn-coder` | Guide for delegating to coder-agent |
 | `spawn-builder` | Guide for delegating to builder-agent |
@@ -487,7 +485,6 @@ Skills are stored in `.claude/skills/{skill-name}/SKILL.md`.
     "test": "npm test"
   },
   "agent_models": {
-    "main-agent": "opus",
     "coder-agent": "opus",
     "builder-agent": "sonnet",
     "codebase-search-agent": "sonnet",
