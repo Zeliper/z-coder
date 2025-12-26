@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 check-tools.py - 도구 설치 여부 확인 Hook
 
@@ -17,6 +17,7 @@ Hook 이벤트:
     - 각 도구의 경로 및 버전
 """
 
+import argparse
 import json
 import subprocess
 import sys
@@ -178,6 +179,15 @@ def detect_project_tools(project_root: Path) -> list[str]:
 
 
 def main():
+    # 명령행 인자 파싱
+    parser = argparse.ArgumentParser(description="도구 설치 여부 확인")
+    parser.add_argument(
+        "--tools",
+        type=str,
+        help="확인할 도구 목록 (쉼표로 구분, 예: npm,node,git)"
+    )
+    args = parser.parse_args()
+
     # Hook 입력 데이터 받기 (stdin에서)
     input_data = {}
     if not sys.stdin.isatty():
@@ -189,8 +199,12 @@ def main():
     # 프로젝트 루트 결정
     project_root = Path(os.environ.get("CLAUDE_PROJECT_DIR", ".")).resolve()
 
-    # 확인할 도구 목록 결정
-    tools_to_check = input_data.get("tools", [])
+    # 확인할 도구 목록 결정 (우선순위: 명령행 인자 > stdin > 자동 감지)
+    tools_to_check = []
+    if args.tools:
+        tools_to_check = [t.strip() for t in args.tools.split(",") if t.strip()]
+    elif input_data.get("tools"):
+        tools_to_check = input_data.get("tools", [])
 
     if not tools_to_check:
         # 프로젝트 타입에 따라 자동 감지

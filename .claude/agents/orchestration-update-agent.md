@@ -66,8 +66,8 @@ git -C .claude-orchestration checkout v{version}
 ### 4. 백업 생성
 
 ```bash
-# 타임스탬프 형식: YYYYMMDD_HHMMSS
-cp -r .claude .claude.backup.{timestamp}
+# 타임스탬프 형식: YYYYMMDD_HHMMSS (크로스 플랫폼)
+python .claude/hooks/file-ops.py backup --src .claude --dst .claude.backup.{timestamp}
 ```
 
 ### 5. 코어 에이전트 파일 업데이트
@@ -89,7 +89,7 @@ cp -r .claude .claude.backup.{timestamp}
 #### 신규 파일인 경우 (복사)
 
 ```bash
-cp .claude-orchestration/.claude/agents/{agent}.md .claude/agents/
+python .claude/hooks/file-ops.py copy --src .claude-orchestration/.claude/agents/{agent}.md --dst .claude/agents/{agent}.md
 ```
 
 ### 6. 커스텀 에이전트 처리
@@ -104,16 +104,16 @@ cp .claude-orchestration/.claude/agents/{agent}.md .claude/agents/
 ### 7. 커맨드 파일 업데이트
 
 ```bash
-# 기존 커맨드 삭제 후 새 버전 복사
-rm -rf .claude/commands/*
-cp -r .claude-orchestration/.claude/commands/* .claude/commands/
+# 기존 커맨드 삭제 후 새 버전 복사 (크로스 플랫폼)
+python .claude/hooks/file-ops.py rmtree --path .claude/commands --ignore-missing
+python .claude/hooks/file-ops.py copytree --src .claude-orchestration/.claude/commands --dst .claude/commands
 ```
 
 ### 8. 템플릿 업데이트
 
 ```bash
-rm -rf .claude/templates/*
-cp -r .claude-orchestration/.claude/templates/* .claude/templates/
+python .claude/hooks/file-ops.py rmtree --path .claude/templates --ignore-missing
+python .claude/hooks/file-ops.py copytree --src .claude-orchestration/.claude/templates --dst .claude/templates
 ```
 
 ### 9. LESSONS_LEARNED.md 처리
@@ -135,14 +135,14 @@ cp -r .claude-orchestration/.claude/templates/* .claude/templates/
 
 업데이트 성공 시:
 ```bash
-rm -rf .claude.backup.{timestamp}
+python .claude/hooks/file-ops.py rmtree --path .claude.backup.{timestamp}
 ```
 
 업데이트 실패 시:
 ```bash
-rm -rf .claude
-mv .claude.backup.{timestamp} .claude
-echo "업데이트 실패. 이전 버전으로 복구되었습니다."
+python .claude/hooks/file-ops.py rmtree --path .claude
+python .claude/hooks/file-ops.py move --src .claude.backup.{timestamp} --dst .claude
+# 메시지: "업데이트 실패. 이전 버전으로 복구되었습니다."
 ```
 
 ---
@@ -183,10 +183,14 @@ echo "업데이트 실패. 이전 버전으로 복구되었습니다."
 | **git-operations** | git 명령어 사용 가이드 |
 
 ### 사용 도구
-- `Bash`: git, cp, rm 명령어 실행
+- `Bash`: git 명령어 실행, Python 스크립트 호출
 - `Read`: 파일 내용 읽기
 - `Write`: 파일 저장
 - `Grep`: 마커 패턴 검색
+
+### 크로스 플랫폼 유틸리티
+- `.claude/hooks/file-ops.py`: 파일/디렉토리 작업 (backup, rmtree, copytree, copy, move)
+- `.claude/hooks/shell-wrapper.py`: 쉘 명령어 래퍼 (echo, cat, env, pipe-json)
 
 ---
 

@@ -1,10 +1,10 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 archive-task.py - Task 및 관련 테스트 파일 아카이브 처리
 
 사용법:
-    python3 archive-task.py TASK-001
-    python3 archive-task.py TASK-001 --dry-run
+    python archive-task.py TASK-001
+    python archive-task.py TASK-001 --dry-run
 
 동작:
     1. ./tasks/TASK-{ID}.md → ./tasks/archive/TASK-{ID}.md
@@ -44,16 +44,11 @@ def find_test_files(project_root: Path, task_id: str) -> list[Path]:
     if not test_dir.exists():
         return []
 
-    # [TASK-ID-*] 패턴으로 시작하는 파일 찾기
-    pattern = f'[{task_id}-*]*'
-    test_files = list(test_dir.glob(pattern))
+    # TASK-ID-*.md 형식의 테스트 파일 찾기 (예: TASK-001-T01.md)
+    pattern = f'{task_id}-*.md'
+    test_files = [f for f in test_dir.glob(pattern) if f.is_file()]
 
-    # 추가 패턴: TASK-ID-T01.md 형식
-    pattern2 = f'{task_id}-*.md'
-    test_files.extend(test_dir.glob(pattern2))
-
-    # 중복 제거
-    return list(set(test_files))
+    return test_files
 
 
 def ensure_archive_dirs(project_root: Path):

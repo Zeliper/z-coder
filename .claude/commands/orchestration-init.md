@@ -61,7 +61,7 @@
 **copy-files.py 스크립트 실행**
 
 ```bash
-python3 .claude-orchestration/.claude/hooks/copy-files.py
+python .claude-orchestration/.claude/hooks/copy-files.py
 ```
 
 ### 복사되는 항목
@@ -134,13 +134,13 @@ python3 .claude-orchestration/.claude/hooks/copy-files.py
 Step 3에서 얻은 도구 목록과 프로젝트 타입 기반으로 설치 여부 확인:
 
 ```bash
-python3 .claude/hooks/check-tools.py
+python .claude/hooks/check-tools.py
 ```
 
-또는 특정 도구 목록 전달:
+또는 특정 도구 목록 전달 (크로스 플랫폼):
 
 ```bash
-echo '{"tools": ["ilspycmd", "dotnet", "npm"]}' | python3 .claude/hooks/check-tools.py
+python .claude/hooks/check-tools.py --tools ilspycmd,dotnet,npm
 ```
 
 ### 출력 형식
@@ -273,9 +273,27 @@ allowed-tools: Bash, Read, Glob
 
 ### 6.2 커스텀 에이전트 생성
 
-`.claude/agents/{agent-name}.md` 형식으로 생성:
+`.claude/agents/{agent-name}.md` 형식으로 생성합니다.
+
+#### 필수 YAML Frontmatter
+
+에이전트 파일은 **반드시 YAML frontmatter**를 포함해야 합니다:
+
+| 필드 | 필수 | 설명 | 예시 |
+|------|------|------|------|
+| `name` | ✅ | 에이전트 식별자 (파일명과 동일) | `decompiled-search-agent` |
+| `description` | ✅ | 에이전트의 역할 설명 | `디컴파일된 게임 코드 탐색` |
+| `model` | ✅ | 사용할 Claude 모델 | `sonnet`, `opus`, `haiku`, `inherit` |
+
+#### 에이전트 파일 형식
 
 ```markdown
+---
+name: {agent-name}
+description: {에이전트 설명}
+model: {sonnet | opus | haiku | inherit}
+---
+
 # {agent-name}
 
 ## 역할
@@ -513,4 +531,5 @@ allowed-tools: Bash, Read, Glob
 - 서브모듈 방식을 권장합니다 (업데이트 용이)
 - 기존 설정이 있으면 --force 옵션이 필요합니다
 - 각 Step의 모델은 config.json의 agent_models로 오버라이드 가능
-- Hooks (check-tools.py, copy-files.py)는 Python으로 크로스플랫폼 지원
+- Hooks는 Python으로 크로스플랫폼 지원 (Windows/Linux 호환)
+- Python 호출은 `python` 명령어 사용 (python3 아님)

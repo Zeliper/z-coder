@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """
 copy-files.py - Orchestration 파일 복사 스크립트
 

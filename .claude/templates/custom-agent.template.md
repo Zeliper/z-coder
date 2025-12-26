@@ -1,3 +1,9 @@
+---
+name: {agent-name}
+description: {agent_description}
+model: {model - sonnet | opus | haiku | inherit}
+---
+
 # {agent-name}
 
 ## 역할
