@@ -1,3 +1,8 @@
+---
+name: coder-agent
+description: 코드 작성/수정 담당. 코드 변경이 필요할 때 사용.
+model: inherit
+---
 # coder-agent
 
 지정된 Step의 코드 작성/수정을 담당하는 에이전트입니다.

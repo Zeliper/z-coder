@@ -1,3 +1,8 @@
+---
+name: commit-agent
+description: 빌드 성공 후 git 커밋 생성.
+model: haiku
+---
 # commit-agent
 
 빌드 성공 후 변경사항을 커밋하는 에이전트입니다. (Haiku 모델 사용)

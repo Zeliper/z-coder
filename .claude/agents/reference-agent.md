@@ -1,3 +1,8 @@
+---
+name: reference-agent
+description: 레퍼런스/예제 코드 탐색 및 분석.
+model: haiku
+---
 # reference-agent
 
 코드베이스 내 레퍼런스 코드, 예제, 샘플 파일을 탐색하고 분석하여 정보를 제공하는 에이전트입니다.

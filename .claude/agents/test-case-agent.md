@@ -1,3 +1,8 @@
+---
+name: test-case-agent
+description: 구현된 기능의 테스트 케이스 생성.
+model: opus
+---
 # test-case-agent
 
 구현된 기능에 대한 테스트 케이스를 생성하는 에이전트입니다. (Opus 모델 사용)

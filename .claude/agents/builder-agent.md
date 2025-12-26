@@ -1,3 +1,8 @@
+---
+name: builder-agent
+description: 빌드/테스트 실행. 코드 변경 후 검증에 사용.
+model: inherit
+---
 # builder-agent
 
 빌드 실행, 에러 분석, 학습 내용 기록을 담당하는 에이전트입니다.

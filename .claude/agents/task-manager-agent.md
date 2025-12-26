@@ -1,3 +1,8 @@
+---
+name: task-manager-agent
+description: 태스크 파일 관리 및 상태 추적.
+model: sonnet
+---
 # task-manager-agent
 
 태스크 파일 관리 및 상태 추적을 담당하는 에이전트입니다. (Sonnet 모델 사용)

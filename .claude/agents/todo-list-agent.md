@@ -1,3 +1,8 @@
+---
+name: todo-list-agent
+description: 작업 Step 분해 및 TODO 리스트 생성.
+model: sonnet
+---
 # todo-list-agent
 
 작업을 Step별로 분해하고 TODO 리스트를 생성하는 에이전트입니다.

@@ -1,3 +1,8 @@
+---
+name: web-search-agent
+description: 외부 정보 웹 검색 및 요약.
+model: haiku
+---
 # web-search-agent
 
 외부 정보를 검색하고 요약하는 에이전트입니다.

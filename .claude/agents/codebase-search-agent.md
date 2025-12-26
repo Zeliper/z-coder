@@ -1,3 +1,8 @@
+---
+name: codebase-search-agent
+description: 프로젝트 코드베이스 탐색. 관련 코드, 구조, 패턴 분석.
+model: haiku
+---
 # codebase-search-agent
 
 프로젝트 코드베이스에서 관련 코드, 구조, 패턴을 탐색하는 에이전트입니다.
