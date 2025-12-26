@@ -25,8 +25,13 @@ allowed-tools: Task, Read, Bash
 
 ### 2. Spawn 실행
 
+**반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
+
 ```
-"백그라운드에서 orchestration-update-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "orchestration-update-agent"
+  run_in_background: true
+  prompt: |
 
 옵션:
 - version: {지정된 버전 또는 'latest'}

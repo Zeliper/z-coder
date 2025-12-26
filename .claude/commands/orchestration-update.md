@@ -24,13 +24,17 @@ $ARGUMENTS → version, dry_run, force 파싱
 
 ### 3. 에이전트 Spawn
 
+**반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
+
 ```
-"백그라운드에서 orchestration-update-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "orchestration-update-agent"
+  run_in_background: true
+  prompt: |
+    옵션: $ARGUMENTS
 
-옵션: $ARGUMENTS
-
-.claude/agents/orchestration-update-agent.md 의 지시를 따르고,
-작업 완료 후 결과만 요약해서 보고해줘."
+    .claude/agents/orchestration-update-agent.md 의 지시를 따르고,
+    작업 완료 후 결과만 요약해서 보고해줘.
 ```
 
 ### 4. 결과 보고

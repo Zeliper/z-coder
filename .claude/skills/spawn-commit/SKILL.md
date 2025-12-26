@@ -39,8 +39,14 @@ builder-agent 결과 확인:
 
 ### 2. Spawn 실행
 
+**반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
+
 ```
-"백그라운드에서 commit-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "commit-agent"
+  run_in_background: true
+  prompt: |
+    다음 작업을 수행해줘:
 TASK-ID: TASK-001
 Step: Step 2
 변경 파일:

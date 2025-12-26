@@ -33,8 +33,14 @@ allowed-tools: Task, Read
 
 ### 2. Spawn 실행
 
+**반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
+
 ```
-"백그라운드에서 coder-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "coder-agent"
+  run_in_background: true
+  prompt: |
+    다음 작업을 수행해줘:
 task 파일: ./tasks/TASK-001.md
 담당 Step: Step 2
 작업 내용: 사용자 인증 미들웨어 구현

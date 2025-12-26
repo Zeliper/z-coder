@@ -82,13 +82,17 @@
 
 ### 에이전트 호출
 
+**반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
+
 ```
-"백그라운드에서 test-case-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "test-case-agent"
+  run_in_background: true
+  prompt: |
+    {Mode에 따른 입력 정보}
 
-{Mode에 따른 입력 정보}
-
-.claude/agents/test-case-agent.md 의 지시를 따르고,
-작업 완료 후 결과만 요약해서 보고해줘."
+    .claude/agents/test-case-agent.md 의 지시를 따르고,
+    작업 완료 후 결과만 요약해서 보고해줘.
 ```
 
 ### 전달 정보

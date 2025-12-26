@@ -23,6 +23,8 @@ allowed-tools: Task, Read, Glob, Grep
 | reference-agent | 예제/템플릿 코드 탐색 | Haiku |
 | web-search-agent | 외부 문서/API 레퍼런스 | Haiku |
 
+**중요: 반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
+
 ### codebase-search-agent
 
 **용도:**
@@ -33,10 +35,13 @@ allowed-tools: Task, Read, Glob, Grep
 
 **Spawn 예시:**
 ```
-"백그라운드에서 codebase-search-agent 역할로 다음 작업을 수행해줘:
-사용자 인증 관련 코드를 찾아줘. 로그인, 세션, 토큰 관련 파일과 함수를 파악해줘.
-.claude/agents/codebase-search-agent.md 의 지시를 따르고,
-작업 완료 후 결과만 요약해서 보고해줘."
+Task tool 호출:
+  subagent_type: "codebase-search-agent"
+  run_in_background: true
+  prompt: |
+    사용자 인증 관련 코드를 찾아줘. 로그인, 세션, 토큰 관련 파일과 함수를 파악해줘.
+    .claude/agents/codebase-search-agent.md 의 지시를 따르고,
+    작업 완료 후 결과만 요약해서 보고해줘.
 ```
 
 ### reference-agent
@@ -48,10 +53,13 @@ allowed-tools: Task, Read, Glob, Grep
 
 **Spawn 예시:**
 ```
-"백그라운드에서 reference-agent 역할로 다음 작업을 수행해줘:
-API 엔드포인트 구현 예제를 찾아줘. examples/, samples/ 폴더와 README를 확인해줘.
-.claude/agents/reference-agent.md 의 지시를 따르고,
-작업 완료 후 결과만 요약해서 보고해줘."
+Task tool 호출:
+  subagent_type: "reference-agent"
+  run_in_background: true
+  prompt: |
+    API 엔드포인트 구현 예제를 찾아줘. examples/, samples/ 폴더와 README를 확인해줘.
+    .claude/agents/reference-agent.md 의 지시를 따르고,
+    작업 완료 후 결과만 요약해서 보고해줘.
 ```
 
 ### web-search-agent
@@ -64,21 +72,34 @@ API 엔드포인트 구현 예제를 찾아줘. examples/, samples/ 폴더와 RE
 
 **Spawn 예시:**
 ```
-"백그라운드에서 web-search-agent 역할로 다음 작업을 수행해줘:
-React 18의 useEffect 변경사항에 대해 검색해줘. 공식 문서 위주로 찾아줘.
-.claude/agents/web-search-agent.md 의 지시를 따르고,
-작업 완료 후 결과만 요약해서 보고해줘."
+Task tool 호출:
+  subagent_type: "web-search-agent"
+  run_in_background: true
+  prompt: |
+    React 18의 useEffect 변경사항에 대해 검색해줘. 공식 문서 위주로 찾아줘.
+    .claude/agents/web-search-agent.md 의 지시를 따르고,
+    작업 완료 후 결과만 요약해서 보고해줘.
 ```
 
 ## 병렬 Spawn 패턴
 
-시간 단축을 위해 **동시에** spawn:
+시간 단축을 위해 **동시에** Task tool 호출 (단일 메시지에 여러 호출):
 
 ```
-[동시 실행]
-├─ codebase-search-agent: 프로젝트 내 관련 코드 탐색
-├─ reference-agent: 예제/템플릿 탐색
-└─ web-search-agent: 외부 문서 검색 (필요시)
+Task tool #1:
+  subagent_type: "codebase-search-agent"
+  run_in_background: true
+  prompt: "프로젝트 내 관련 코드 탐색..."
+
+Task tool #2:
+  subagent_type: "reference-agent"
+  run_in_background: true
+  prompt: "예제/템플릿 탐색..."
+
+Task tool #3 (필요시):
+  subagent_type: "web-search-agent"
+  run_in_background: true
+  prompt: "외부 문서 검색..."
 ```
 
 ## 결과 활용

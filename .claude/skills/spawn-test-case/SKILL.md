@@ -48,8 +48,13 @@ commit-agent 결과 확인:
 
 ### 2. Spawn 실행
 
+**반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
+
 ```
-"백그라운드에서 test-case-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "test-case-agent"
+  run_in_background: true
+  prompt: |
 TASK-ID: TASK-001
 Step: Step 2
 변경 파일:
@@ -82,9 +87,11 @@ test-case-agent 결과 확인:
 ### Spawn 실행
 
 ```
-"백그라운드에서 test-case-agent 역할로 다음 작업을 수행해줘:
-
-모드: standalone (또는 files)
+Task tool 호출:
+  subagent_type: "test-case-agent"
+  run_in_background: true
+  prompt: |
+    모드: standalone (또는 files)
 테스트 ID: STANDALONE-001-T01
 설명: {사용자 제공 설명}
 대상 파일:

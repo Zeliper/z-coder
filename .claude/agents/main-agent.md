@@ -255,10 +255,31 @@ task 파일에 {agent_name}_result 섹션이 존재하면 해당 에이전트 sp
 ```
 
 ## Spawn 형식
+
+**반드시 Task tool을 사용하여 spawn합니다. Bash 명령어로 실행하지 마세요.**
+
 ```
-"백그라운드에서 {에이전트명} 역할로 다음 작업을 수행해줘: {작업 내용}
-.claude/agents/{에이전트명}.md 의 지시를 따르고,
-작업 완료 후 결과만 요약해서 보고해줘."
+Task tool 호출:
+  subagent_type: "{에이전트명}"
+  run_in_background: true
+  prompt: |
+    다음 작업을 수행해줘: {작업 내용}
+    .claude/agents/{에이전트명}.md 의 지시를 따르고,
+    작업 완료 후 결과만 요약해서 보고해줘.
+```
+
+### 병렬 Spawn 예시
+```
+# 동시에 여러 에이전트 spawn (단일 메시지에 여러 Task tool 호출)
+Task tool #1:
+  subagent_type: "codebase-search-agent"
+  run_in_background: true
+  prompt: "관련 코드 탐색..."
+
+Task tool #2:
+  subagent_type: "reference-agent"
+  run_in_background: true
+  prompt: "레퍼런스 코드 탐색..."
 ```
 
 ---

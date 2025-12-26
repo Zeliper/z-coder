@@ -16,10 +16,15 @@ allowed-tools: Task, Read
 
 ## 사용 시나리오
 
+**반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
+
 ### 1. 태스크 목록 조회
 
 ```
-"백그라운드에서 task-manager-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "task-manager-agent"
+  run_in_background: true
+  prompt: |
 액션: list
 필터: in_progress (선택적)
 
@@ -30,7 +35,10 @@ allowed-tools: Task, Read
 ### 2. 태스크 상태 조회
 
 ```
-"백그라운드에서 task-manager-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "task-manager-agent"
+  run_in_background: true
+  prompt: |
 액션: get
 대상: TASK-001
 
@@ -41,7 +49,10 @@ allowed-tools: Task, Read
 ### 3. 상태 업데이트
 
 ```
-"백그라운드에서 task-manager-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "task-manager-agent"
+  run_in_background: true
+  prompt: |
 액션: update
 대상: TASK-001
 새 상태: pending_test
@@ -53,7 +64,10 @@ allowed-tools: Task, Read
 ### 4. 테스트 결과 기록
 
 ```
-"백그라운드에서 task-manager-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "task-manager-agent"
+  run_in_background: true
+  prompt: |
 액션: record_test
 대상: TASK-001
 테스트 결과:
@@ -69,7 +83,10 @@ allowed-tools: Task, Read
 ### 5. 내용 추가
 
 ```
-"백그라운드에서 task-manager-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "task-manager-agent"
+  run_in_background: true
+  prompt: |
 액션: add_content
 대상: TASK-001
 섹션: 에이전트 결과
@@ -85,7 +102,10 @@ allowed-tools: Task, Read
 ### 6. 아카이빙
 
 ```
-"백그라운드에서 task-manager-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "task-manager-agent"
+  run_in_background: true
+  prompt: |
 액션: archive
 대상: TASK-001
 

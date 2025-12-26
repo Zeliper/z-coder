@@ -52,10 +52,15 @@ Opus 호출을 최소화하여 비용 효율을 유지합니다.
 
 ## Spawn 방법
 
+**반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
+
 ### 새 태스크 분석
 
 ```
-"백그라운드에서 decision-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "decision-agent"
+  run_in_background: true
+  prompt: |
 
 결정 유형: plan_mode
 컨텍스트: {사용자 요청 원문}
@@ -72,7 +77,10 @@ Opus 호출을 최소화하여 비용 효율을 유지합니다.
 ### 아키텍처 결정
 
 ```
-"백그라운드에서 decision-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "decision-agent"
+  run_in_background: true
+  prompt: |
 
 결정 유형: architecture
 컨텍스트: {결정이 필요한 상황}
@@ -89,7 +97,10 @@ Opus 호출을 최소화하여 비용 효율을 유지합니다.
 ### 에러 해결
 
 ```
-"백그라운드에서 decision-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "decision-agent"
+  run_in_background: true
+  prompt: |
 
 결정 유형: error_resolution
 컨텍스트: {에러 상황 설명}

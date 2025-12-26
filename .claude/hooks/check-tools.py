@@ -26,11 +26,14 @@ from pathlib import Path
 from typing import Optional
 
 
-# 도구별 버전 확인 명령어
+# 도구별 버전 확인 명령어 (Windows 호환)
+_PYTHON_CMD = "python" if sys.platform == "win32" else "python3"
+_PIP_CMD = "pip" if sys.platform == "win32" else "pip3"
+
 TOOL_COMMANDS = {
     # 런타임/언어
     "python": {"check": "python --version", "version_arg": "--version"},
-    "python3": {"check": "python3 --version", "version_arg": "--version"},
+    "python3": {"check": f"{_PYTHON_CMD} --version", "version_arg": "--version"},
     "node": {"check": "node --version", "version_arg": "--version"},
     "npm": {"check": "npm --version", "version_arg": "--version"},
     "go": {"check": "go version", "version_arg": "version"},
@@ -54,7 +57,7 @@ TOOL_COMMANDS = {
 
     # 패키지 관리자
     "pip": {"check": "pip --version", "version_arg": "--version"},
-    "pip3": {"check": "pip3 --version", "version_arg": "--version"},
+    "pip3": {"check": f"{_PIP_CMD} --version", "version_arg": "--version"},
     "yarn": {"check": "yarn --version", "version_arg": "--version"},
     "pnpm": {"check": "pnpm --version", "version_arg": "--version"},
     "composer": {"check": "composer --version", "version_arg": "--version"},

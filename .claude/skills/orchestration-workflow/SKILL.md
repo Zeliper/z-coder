@@ -93,12 +93,25 @@ Main-agent가 작업을 효율적으로 처리하기 위한 워크플로우 가�
 
 ### 정보 수집 단계
 
-다음 에이전트들을 **동시에** 백그라운드 spawn:
+다음 에이전트들을 **동시에** 백그라운드 spawn (단일 메시지에 여러 Task tool 호출):
+
+**반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
 
 ```
-"백그라운드에서 codebase-search-agent 역할로..."
-"백그라운드에서 reference-agent 역할로..."
-"백그라운드에서 web-search-agent 역할로..."
+Task tool #1:
+  subagent_type: "codebase-search-agent"
+  run_in_background: true
+  prompt: "..."
+
+Task tool #2:
+  subagent_type: "reference-agent"
+  run_in_background: true
+  prompt: "..."
+
+Task tool #3:
+  subagent_type: "web-search-agent"
+  run_in_background: true
+  prompt: "..."
 ```
 
 ### Step 실행 단계

@@ -36,10 +36,15 @@ allowed-tools: Task, Read
 
 ## Spawn 방법
 
+**반드시 Task tool을 사용합니다. Bash 명령어로 실행하지 마세요.**
+
 ### 기본 형식
 
 ```
-"백그라운드에서 markdown-writer-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "markdown-writer-agent"
+  run_in_background: true
+  prompt: |
 
 콘텐츠 유형: {summary | description | guide | error_report | test_items}
 컨텍스트: {작성에 필요한 정보}
@@ -53,7 +58,10 @@ allowed-tools: Task, Read
 ### 테스트 항목 생성
 
 ```
-"백그라운드에서 markdown-writer-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "markdown-writer-agent"
+  run_in_background: true
+  prompt: |
 
 콘텐츠 유형: test_items
 컨텍스트: JWT 토큰 검증 테스트. 유효/만료/변조 케이스 포함.
@@ -67,7 +75,10 @@ allowed-tools: Task, Read
 ### 에러 분석 보고서
 
 ```
-"백그라운드에서 markdown-writer-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "markdown-writer-agent"
+  run_in_background: true
+  prompt: |
 
 콘텐츠 유형: error_report
 컨텍스트: TypeScript 빌드 에러. 순환 참조 감지. 파일: src/types/index.ts
@@ -81,7 +92,10 @@ allowed-tools: Task, Read
 ### 요약문 생성
 
 ```
-"백그라운드에서 markdown-writer-agent 역할로 다음 작업을 수행해줘:
+Task tool 호출:
+  subagent_type: "markdown-writer-agent"
+  run_in_background: true
+  prompt: |
 
 콘텐츠 유형: summary
 컨텍스트: {작업 완료 내용}
