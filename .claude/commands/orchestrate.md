@@ -13,18 +13,39 @@
 - `--task TASK-ID`: 기존 태스크 이어서 진행
 - `--ref TASK-ID`: 완료된 태스크 참조하여 수정/확장
 
-## 실행 지침
+---
 
-이 명령어가 실행되면 `main-agent.md`의 지시를 따라 오케스트레이션을 수행합니다.
+## 중요: main-agent Spawn 필수
 
-### 1. 초기화 확인
-`.claude/config.json` 존재 확인:
-- 없으면: "/orchestration-init을 먼저 실행하세요" 안내
+**이 커맨드는 반드시 Task tool로 main-agent를 spawn해야 합니다.**
 
-### 2. main-agent 활성화
-`.claude/agents/main-agent.md`의 지시에 따라 작업 수행
+현재 세션에서 직접 코드를 수정하지 마세요. 대신:
 
-### 3. 워크플로우
+```
+Task tool 호출:
+  subagent_type: "main-agent"
+  prompt: "{사용자 요청 전체}"
+  run_in_background: false (결과를 기다림)
+```
+
+### 실행 순서
+
+1. **초기화 확인**
+   - `.claude/config.json` 존재 확인
+   - 없으면: "/orchestration-init을 먼저 실행하세요" 안내 후 종료
+
+2. **main-agent Spawn**
+   - Task tool로 main-agent spawn
+   - 사용자 요청 전체를 prompt로 전달
+   - 옵션(--task, --ref)도 함께 전달
+
+3. **결과 전달**
+   - main-agent 결과를 사용자에게 전달
+   - 추가 입력이 필요하면 사용자에게 질문
+
+---
+
+## main-agent 워크플로우 (참고용)
 
 #### Phase 1: 초기화 및 정보 수집
 ```
